@@ -24,6 +24,16 @@ show_help() {
     echo ""
 }
 
+sed_inplace() {
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS (BSD sed)
+        SED_INPLACE=("sed" "-i" "")
+    else
+        # Linux (GNU sed)
+        SED_INPLACE=("sed" "-i")
+    fi
+}
+
 # Validate version format
 validate_version() {
     if [[ ! "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -66,11 +76,11 @@ update_files() {
     echo -e "${BLUE}Updating Helm chart files...${NC}"
     
     # Update Chart.yaml
-    sed -i "s/version: .*/version: $version/" ./charts/k8s-gpu-monitoring-dev/Chart.yaml
-    sed -i "s/appVersion: .*/appVersion: \"$version\"/" ./charts/k8s-gpu-monitoring-dev/Chart.yaml
+    "${SED_INPLACE[@]}" "s/version: .*/version: $version/" ./charts/k8s-gpu-monitoring-dev/Chart.yaml
+    "${SED_INPLACE[@]}" "s/appVersion: .*/appVersion: \"$version\"/" ./charts/k8s-gpu-monitoring-dev/Chart.yaml
     
     # Update values.yaml
-    sed -i "s/tag: .*/tag: \"$version\"/g" ./charts/k8s-gpu-monitoring-dev/values.yaml
+    "${SED_INPLACE[@]}" "s/tag: .*/tag: \"$version\"/g" ./charts/k8s-gpu-monitoring-dev/values.yaml
     
     echo -e "${GREEN}Updated files:${NC}"
     echo "  - charts/k8s-gpu-monitoring-dev/Chart.yaml"
@@ -120,6 +130,7 @@ main() {
     fi
     
     local version=$1
+    sed_inplace
     
     echo -e "${BLUE}Starting release process for version $version${NC}"
     
