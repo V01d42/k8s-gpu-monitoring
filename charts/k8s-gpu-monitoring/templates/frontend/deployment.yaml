@@ -60,8 +60,12 @@ spec:
         volumeMounts:
           - name: nginx-cache
             mountPath: /var/cache/nginx
+          - name: run-dir
+            mountPath: /run
       volumes:
         - name: nginx-cache
+          emptyDir: {}
+        - name: run-dir
           emptyDir: {}
       {{- with .Values.frontend.nodeSelector }}
       nodeSelector:
