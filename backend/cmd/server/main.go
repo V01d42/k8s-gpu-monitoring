@@ -34,7 +34,7 @@ func main() {
 	mux := http.NewServeMux()
 
 	// Register API routes
-	mux.HandleFunc("GET /api/health", gpuHandler.HealthCheck)
+	mux.HandleFunc("GET /api/healthz", gpuHandler.HealthCheck)
 	mux.HandleFunc("GET /api/v1/gpu/metrics", gpuHandler.GetGPUMetrics)
 	mux.HandleFunc("GET /api/v1/gpu/nodes", gpuHandler.GetGPUNodes)
 	mux.HandleFunc("GET /api/v1/gpu/utilization", gpuHandler.GetGPUUtilization)

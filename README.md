@@ -44,7 +44,7 @@ kubectl port-forward -n gpu-monitoring svc/gpu-monitoring-frontend 3000:80
 #### API
 ```bash
 # ヘルスチェック
-curl http://gpu-monitoring.local/api/health
+curl http://gpu-monitoring.local/api/healthz
 
 # GPUメトリクス取得
 curl http://gpu-monitoring.local/api/v1/gpu/metrics
@@ -120,7 +120,7 @@ npm run dev
 #### 3. 開発時のアクセス
 - **フロントエンド**: http://localhost:3000
 - **バックエンドAPI**: http://localhost:8080
-- **APIドキュメント**: http://localhost:8080/api/health
+- **APIドキュメント**: http://localhost:8080/api/healthz
 
 ## 設定
 
@@ -250,7 +250,7 @@ helm test gpu-monitoring --namespace gpu-monitoring
 
 | Method | Path | 説明 | レスポンス |
 |--------|------|------|-----------|
-| GET | `/api/health` | ヘルスチェック・Prometheus接続確認 | `APIResponse` |
+| GET | `/api/healthz` | ヘルスチェック・Prometheus接続確認 | `APIResponse` |
 | GET | `/api/v1/gpu/metrics` | 全GPUの詳細メトリクス | `APIResponse<GPUMetrics[]>` |
 | GET | `/api/v1/gpu/nodes` | GPU搭載ノード一覧 | `APIResponse<GPUNode[]>` |
 | GET | `/api/v1/gpu/utilization` | GPU利用率のみ（軽量） | `APIResponse<GPUUtilization[]>` |
@@ -261,11 +261,11 @@ helm test gpu-monitoring --namespace gpu-monitoring
 ```bash
 # Backend API
 kubectl exec -n gpu-monitoring deployment/gpu-monitoring-backend -- \
-  wget -qO- http://localhost:8080/api/health
+  wget -qO- http://localhost:8080/api/healthz
 
 # Frontend
 kubectl exec -n gpu-monitoring deployment/gpu-monitoring-frontend -- \
-  wget -qO- http://localhost:80/health
+  wget -qO- http://localhost:80/healthz
 ```
 
 ### ログ確認

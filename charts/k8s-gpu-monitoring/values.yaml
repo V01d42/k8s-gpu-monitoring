@@ -47,7 +47,7 @@ backend:
   # Liveness and readiness probes
   livenessProbe:
     httpGet:
-      path: /api/health
+      path: /api/healthz
       port: http
     initialDelaySeconds: 30
     periodSeconds: 10
@@ -56,7 +56,7 @@ backend:
   
   readinessProbe:
     httpGet:
-      path: /api/health
+      path: /api/healthz
       port: http
     initialDelaySeconds: 5
     periodSeconds: 5
@@ -125,7 +125,7 @@ frontend:
   # Liveness and readiness probes
   livenessProbe:
     httpGet:
-      path: /health
+      path: /healthz
       port: http
     initialDelaySeconds: 30
     periodSeconds: 10
@@ -134,7 +134,7 @@ frontend:
   
   readinessProbe:
     httpGet:
-      path: /health
+      path: /healthz
       port: http
     initialDelaySeconds: 5
     periodSeconds: 5

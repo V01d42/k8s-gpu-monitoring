@@ -17,7 +17,7 @@ K8s上でPrometheusからGPUメトリクスを取得・表示するためのGo 1
 
 ### ヘルスチェック
 ```
-GET /api/health
+GET /api/healthz
 ```
 サーバーとPrometheus接続の健全性をチェック
 
@@ -166,7 +166,7 @@ docker run -p 8080:8080 \
 
 # ヘルスチェック付きで実行
 docker run -p 8080:8080 \
-  --health-cmd="wget --no-verbose --tries=1 --spider http://localhost:8080/api/health || exit 1" \
+  --health-cmd="wget --no-verbose --tries=1 --spider http://localhost:8080/api/healthz || exit 1" \
   --health-interval=30s \
   --health-timeout=10s \
   --health-retries=3 \
@@ -279,7 +279,7 @@ nvidia_gpu_temperature_celsius
 ```bash
 # 典型的なパフォーマンス（開発環境）
 GET /api/v1/gpu/metrics: ~200ms (6個のGPU、並行クエリ)
-GET /api/health: ~50ms
+GET /api/healthz: ~50ms
 GET /api/v1/gpu/utilization: ~100ms (軽量クエリ)
 ```
 

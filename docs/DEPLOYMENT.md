@@ -245,20 +245,20 @@ helm install gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
 ```bash
 # Backend API ヘルスチェック
 kubectl exec -n gpu-monitoring deployment/gpu-monitoring-backend \
-  -- wget -qO- http://localhost:8080/api/health
+  -- wget -qO- http://localhost:8080/api/healthz
 
 # 成功時のレスポンス例:
 # {"success":true,"message":"Service is healthy","data":{"status":"healthy","timestamp":"2024-01-01T12:00:00Z","version":"1.0.0"}}
 
 # Frontend ヘルスチェック
 kubectl exec -n gpu-monitoring deployment/gpu-monitoring-frontend \
-  -- wget -qO- http://localhost:80/health
+  -- wget -qO- http://localhost:80/healthz
 
 # 成功時のレスポンス: "healthy"
 
 # 外部からのヘルスチェック
-curl http://gpu-monitoring.local/api/health
-curl http://gpu-monitoring.local/health
+curl http://gpu-monitoring.local/api/healthz
+curl http://gpu-monitoring.local/healthz
 ```
 
 ### ログ確認
@@ -271,7 +271,7 @@ kubectl logs -n gpu-monitoring deployment/gpu-monitoring-backend -f
 # 2024/01/01 12:00:00 Prometheus URL: http://prometheus-server:9090
 # 2024/01/01 12:00:00 Server Port: 8080
 # 2024/01/01 12:00:00 Server starting on port 8080
-# GET /api/health 200 123µs 192.168.1.1
+# GET /api/healthz 200 123µs 192.168.1.1
 
 # Frontend ログ（Nginxアクセスログ）
 kubectl logs -n gpu-monitoring deployment/gpu-monitoring-frontend -f
@@ -473,7 +473,7 @@ kubectl logs -n gpu-monitoring deployment/gpu-monitoring-frontend
 # F12 -> Network -> XHR を確認してAPI通信をチェック
 
 # API通信の確認
-curl http://gpu-monitoring.local/api/health
+curl http://gpu-monitoring.local/api/healthz
 curl http://gpu-monitoring.local/api/v1/gpu/metrics
 
 # フロントエンドからバックエンドへの通信確認
