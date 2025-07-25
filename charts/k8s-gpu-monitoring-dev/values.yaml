@@ -1,0 +1,212 @@
+# Global configuration
+global:
+  # Image registry
+  imageRegistry: "ghcr.io/v01d42/k8s-gpu-monitoring-dev"
+  
+  # Image pull secrets
+  imagePullSecrets: []
+
+# Backend Configuration (Go API Server)
+backend:
+  enabled: true
+  
+  # Image configuration
+  image:
+    repository: "backend"
+    tag: "0.4.0"
+    pullPolicy: IfNotPresent
+  
+  # Deployment configuration
+  replicas: 1
+  
+  # Container port
+  containerPort: 8080
+  
+  # Service configuration
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
+    annotations: {}
+  
+  # Resource requirements
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "256Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+  
+  # Environment variables
+  env:
+    # Prometheus server URL (adjust to your environment)
+    PROMETHEUS_URL: "http://prometheus-server:9090"
+    PORT: "8080"
+  
+  # Liveness and readiness probes
+  livenessProbe:
+    httpGet:
+      path: /api/health
+      port: http
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  
+  readinessProbe:
+    httpGet:
+      path: /api/health
+      port: http
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+  
+  # Pod security context (for spec.template.spec.securityContext)
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1001
+    runAsGroup: 1001
+    fsGroup: 1001
+  
+  # Container security context (for spec.template.spec.containers[].securityContext)
+  containerSecurityContext:
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+  
+  # Node selector
+  nodeSelector: {}
+  
+  # Tolerations
+  tolerations: []
+  
+  # Affinity
+  affinity: {}
+
+# Frontend Configuration (React App)
+frontend:
+  enabled: true
+  
+  # Image configuration
+  image:
+    repository: "frontend"
+    tag: "0.4.0"
+    pullPolicy: IfNotPresent
+  
+  # Deployment configuration
+  replicas: 1
+  
+  # Container port
+  containerPort: 80
+  
+  # Service configuration
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 80
+    annotations: {}
+  
+  # Resource requirements
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "200m"
+      memory: "256Mi"
+  
+  # Environment variables
+  env: {}
+  
+  # Liveness and readiness probes
+  livenessProbe:
+    httpGet:
+      path: /health
+      port: http
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+  
+  readinessProbe:
+    httpGet:
+      path: /health
+      port: http
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+  
+  # Pod security context (for spec.template.spec.securityContext)
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 101
+    runAsGroup: 101
+    fsGroup: 101
+  
+  # Container security context (for spec.template.spec.containers[].securityContext)
+  containerSecurityContext:
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+  
+  # Node selector
+  nodeSelector: {}
+  
+  # Tolerations
+  tolerations: []
+  
+  # Affinity
+  affinity: {}
+
+# Ingress Configuration
+ingress:
+  enabled: true
+  className: "nginx"
+  
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  
+  hosts:
+    - host: gpu-monitoring.local
+      paths:
+        - path: /api
+          pathType: Prefix
+          backend:
+            service: backend
+            port: 8080
+        - path: /
+          pathType: Prefix
+          backend:
+            service: frontend
+            port: 80
+  
+  # TLS設定（必要に応じて有効化）
+  tls: []
+
+# ServiceAccount Configuration
+serviceAccount:
+  create: false
+
+# RBAC Configuration
+rbac:
+  create: false
+
+# 以下の機能は個人利用では不要のため削除
+# - autoscaling (HPA)
+# - podDisruptionBudget (PDB)
+# - networkPolicy
+# - configMap
+# - secret
+
+# Additional labels
+commonLabels: {}
+
+# Additional annotations
+commonAnnotations: {} 
