@@ -2,10 +2,10 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "k8s-gpu-monitoring-dev.fullname" . }}
+  name: {{ include "k8s-gpu-monitoring.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "k8s-gpu-monitoring-dev.labels" . | nindent 4 }}
+    {{- include "k8s-gpu-monitoring.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -35,9 +35,9 @@ spec:
             backend:
               service:
                 {{- if eq .backend.service "backend" }}
-                name: {{ include "k8s-gpu-monitoring-dev.backend.fullname" $ }}
+                name: {{ include "k8s-gpu-monitoring.backend.fullname" $ }}
                 {{- else if eq .backend.service "frontend" }}
-                name: {{ include "k8s-gpu-monitoring-dev.frontend.fullname" $ }}
+                name: {{ include "k8s-gpu-monitoring.frontend.fullname" $ }}
                 {{- end }}
                 port:
                   number: {{ .backend.port }}

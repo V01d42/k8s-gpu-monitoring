@@ -1,5 +1,5 @@
 apiVersion: v2
-name: k8s-gpu-monitoring-dev
+name: k8s-gpu-monitoring
 description: |
   Kubernetes GPU Monitoring Dashboard - A comprehensive solution for monitoring 
   GPU resources in Kubernetes clusters with Prometheus metrics and real-time dashboard.
@@ -16,9 +16,9 @@ keywords:
   - dashboard
   - metrics
 
-home: https://github.com/V01d42/k8s-gpu-monitoring-dev
+home: https://github.com/V01d42/k8s-gpu-monitoring
 sources:
-  - https://github.com/V01d42/k8s-gpu-monitoring-dev
+  - https://github.com/V01d42/k8s-gpu-monitoring
 
 maintainers:
   - name: V01d42
@@ -29,8 +29,8 @@ annotations:
   licenses: MIT
   images: |
     - name: gpu-monitoring-backend
-      image: ghcr.io/v01d42/k8s-gpu-monitoring-dev/backend:1.0.0
+      image: ghcr.io/v01d42/k8s-gpu-monitoring/backend:1.0.0
     - name: gpu-monitoring-frontend  
-      image: ghcr.io/v01d42/k8s-gpu-monitoring-dev/frontend:1.0.0
+      image: ghcr.io/v01d42/k8s-gpu-monitoring/frontend:1.0.0
 
 dependencies: [] 

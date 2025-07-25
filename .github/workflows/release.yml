@@ -108,8 +108,8 @@ jobs:
 
       - name: Verify Chart version consistency
         run: |
-          CHART_VERSION=$(grep "version:" ./charts/k8s-gpu-monitoring-dev/Chart.yaml | awk '{print $2}')
-          CHART_APP_VERSION=$(grep "appVersion:" ./charts/k8s-gpu-monitoring-dev/Chart.yaml | awk '{print $2}' | tr -d '"')
+          CHART_VERSION=$(grep "version:" ./charts/k8s-gpu-monitoring/Chart.yaml | awk '{print $2}')
+          CHART_APP_VERSION=$(grep "appVersion:" ./charts/k8s-gpu-monitoring/Chart.yaml | awk '{print $2}' | tr -d '"')
           
           echo "Verifying version consistency..."
           echo "  Release version: ${{ steps.get_version.outputs.version }}"
@@ -129,10 +129,10 @@ jobs:
       - name: Update values.yaml with new image tags
         run: |
           # Update backend and frontend image tags in values.yaml
-          sed -i 's/tag: ".*"/tag: "${{ steps.get_version.outputs.version }}"/g' ./charts/k8s-gpu-monitoring-dev/values.yaml
+          sed -i 's/tag: ".*"/tag: "${{ steps.get_version.outputs.version }}"/g' ./charts/k8s-gpu-monitoring/values.yaml
           
           echo "Updated values.yaml with version ${{ steps.get_version.outputs.version }}"
-          grep -A 3 'image:' ./charts/k8s-gpu-monitoring-dev/values.yaml
+          grep -A 3 'image:' ./charts/k8s-gpu-monitoring/values.yaml
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0

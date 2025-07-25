@@ -2,11 +2,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "k8s-gpu-monitoring-dev.frontend.fullname" . }}
+  name: {{ include "k8s-gpu-monitoring.frontend.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "k8s-gpu-monitoring-dev.frontend.labels" . | nindent 4 }}
-  {{- with (include "k8s-gpu-monitoring-dev.annotations" .) }}
+    {{- include "k8s-gpu-monitoring.frontend.labels" . | nindent 4 }}
+  {{- with (include "k8s-gpu-monitoring.annotations" .) }}
   annotations:
     {{- . | nindent 4 }}
   {{- end }}
@@ -14,11 +14,11 @@ spec:
   replicas: {{ .Values.frontend.replicas }}
   selector:
     matchLabels:
-      {{- include "k8s-gpu-monitoring-dev.frontend.selectorLabels" . | nindent 6 }}
+      {{- include "k8s-gpu-monitoring.frontend.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "k8s-gpu-monitoring-dev.frontend.labels" . | nindent 8 }}
+        {{- include "k8s-gpu-monitoring.frontend.labels" . | nindent 8 }}
       {{- with .Values.frontend.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
@@ -32,7 +32,7 @@ spec:
         {{- toYaml .Values.frontend.securityContext | nindent 8 }}
       containers:
       - name: frontend
-        image: {{ include "k8s-gpu-monitoring-dev.frontend.image" . }}
+        image: {{ include "k8s-gpu-monitoring.frontend.image" . }}
         imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
         ports:
         - name: http
@@ -42,7 +42,7 @@ spec:
           {{- toYaml .Values.frontend.containerSecurityContext | nindent 10 }}
         env:
         - name: API_BASE_URL
-          value: "http://{{ include "k8s-gpu-monitoring-dev.backend.fullname" . }}:{{ .Values.backend.service.port }}"
+          value: "http://{{ include "k8s-gpu-monitoring.backend.fullname" . }}:{{ .Values.backend.service.port }}"
         {{- range $key, $value := .Values.frontend.env }}
         - name: {{ $key }}
           value: {{ $value | quote }}

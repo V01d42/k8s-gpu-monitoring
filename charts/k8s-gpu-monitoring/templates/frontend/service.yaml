@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "k8s-gpu-monitoring-dev.frontend.fullname" . }}
+  name: {{ include "k8s-gpu-monitoring.frontend.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "k8s-gpu-monitoring-dev.frontend.labels" . | nindent 4 }}
+    {{- include "k8s-gpu-monitoring.frontend.labels" . | nindent 4 }}
   {{- with .Values.frontend.service.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -18,5 +18,5 @@ spec:
     protocol: TCP
     name: http
   selector:
-    {{- include "k8s-gpu-monitoring-dev.frontend.selectorLabels" . | nindent 4 }}
+    {{- include "k8s-gpu-monitoring.frontend.selectorLabels" . | nindent 4 }}
 {{- end }} 

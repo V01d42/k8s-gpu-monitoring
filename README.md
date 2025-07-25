@@ -14,11 +14,11 @@ Kubernetes上でPrometheusからGPUメトリクスを取得・表示するため
 
 ```bash
 # Helmリポジトリ追加
-helm repo add gpu-monitoring https://v01d42.github.io/k8s-gpu-monitoring-dev
+helm repo add gpu-monitoring https://v01d42.github.io/k8s-gpu-monitoring
 helm repo update
 
 # 基本インストール
-helm install gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm install gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --create-namespace \
   --set backend.env.PROMETHEUS_URL=http://prometheus-server:9090 \
@@ -59,7 +59,7 @@ curl http://gpu-monitoring.local/api/v1/gpu/nodes
 ## プロジェクト構成
 
 ```
-k8s-gpu-monitoring-dev/
+k8s-gpu-monitoring/
 ├── backend/                      # Go 1.24 API サーバー
 │   ├── cmd/server/main.go       # メインエントリーポイント
 │   ├── internal/
@@ -77,7 +77,7 @@ k8s-gpu-monitoring-dev/
 ├── frontend/                   # React 19
 │   └── Dockerfile
 ├── charts/                     # Helm Charts
-│   └── k8s-gpu-monitoring-dev/ # Helm Chart
+│   └── k8s-gpu-monitoring/ # Helm Chart
 │       ├── Chart.yaml          # Chart difinition
 │       ├── values.yaml         # Default setting value
 │       └── templates/          # Kubernetes manifest
@@ -158,7 +158,7 @@ nvidia_gpu_temperature_celsius
 ```yaml
 # values.yaml
 global:
-  imageRegistry: "ghcr.io/v01d42/k8s-gpu-monitoring-dev"
+  imageRegistry: "ghcr.io/v01d42/k8s-gpu-monitoring"
 
 backend:
   enabled: true
@@ -277,7 +277,7 @@ kubectl logs -n gpu-monitoring deployment/gpu-monitoring-backend -f
 kubectl logs -n gpu-monitoring deployment/gpu-monitoring-frontend -f
 
 # 全体ログ
-kubectl logs -n gpu-monitoring -l app.kubernetes.io/name=k8s-gpu-monitoring-dev -f
+kubectl logs -n gpu-monitoring -l app.kubernetes.io/name=k8s-gpu-monitoring -f
 ```
 
 ### リソース確認
@@ -300,11 +300,11 @@ kubectl describe pods -n gpu-monitoring
 helm repo update
 
 # アップグレード
-helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring
 
 # 特定バージョンにアップグレード
-helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --version 1.0.1
 ```
@@ -312,7 +312,7 @@ helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
 ### 設定変更アップグレード
 ```bash
 # リソース設定変更
-helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --set backend.resources.requests.cpu=500m \
   --set backend.resources.requests.memory=512Mi

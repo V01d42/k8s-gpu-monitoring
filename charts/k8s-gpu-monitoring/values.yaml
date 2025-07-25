@@ -1,7 +1,7 @@
 # Global configuration
 global:
   # Image registry
-  imageRegistry: "ghcr.io/v01d42/k8s-gpu-monitoring-dev"
+  imageRegistry: "ghcr.io/v01d42/k8s-gpu-monitoring"
   
   # Image pull secrets
   imagePullSecrets: []
