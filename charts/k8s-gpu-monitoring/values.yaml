@@ -1,7 +1,7 @@
 # Global configuration
 global:
   # Image registry
-  imageRegistry: "ghcr.io/v01d42/k8s-gpu-monitoring-dev"
+  imageRegistry: "ghcr.io/v01d42/k8s-gpu-monitoring"
   
   # Image pull secrets
   imagePullSecrets: []
@@ -13,7 +13,7 @@ backend:
   # Image configuration
   image:
     repository: "backend"
-    tag: "0.0.3"
+    tag: "0.1.4"
     pullPolicy: IfNotPresent
   
   # Deployment configuration
@@ -27,6 +27,8 @@ backend:
     type: ClusterIP
     port: 8080
     targetPort: 8080
+    # NodePort configuration (only used when type is NodePort)
+    # nodePort: 30080  # Optional: specify a specific NodePort (30000-32767 range)
     annotations: {}
   
   # Resource requirements
@@ -47,7 +49,7 @@ backend:
   # Liveness and readiness probes
   livenessProbe:
     httpGet:
-      path: /api/health
+      path: /api/healthz
       port: http
     initialDelaySeconds: 30
     periodSeconds: 10
@@ -56,7 +58,7 @@ backend:
   
   readinessProbe:
     httpGet:
-      path: /api/health
+      path: /api/healthz
       port: http
     initialDelaySeconds: 5
     periodSeconds: 5
@@ -94,20 +96,22 @@ frontend:
   # Image configuration
   image:
     repository: "frontend"
-    tag: "0.0.3"
+    tag: "0.1.4"
     pullPolicy: IfNotPresent
   
   # Deployment configuration
   replicas: 1
   
   # Container port
-  containerPort: 80
+  containerPort: 5173
   
   # Service configuration
   service:
-    type: ClusterIP
-    port: 80
-    targetPort: 80
+    type: NodePort
+    port: 5173
+    targetPort: 5173
+    # NodePort configuration (only used when type is NodePort)
+    nodePort: 32173  # Optional: specify a specific NodePort (30000-32767 range)
     annotations: {}
   
   # Resource requirements
@@ -125,7 +129,7 @@ frontend:
   # Liveness and readiness probes
   livenessProbe:
     httpGet:
-      path: /health
+      path: /healthz
       port: http
     initialDelaySeconds: 30
     periodSeconds: 10
@@ -134,7 +138,7 @@ frontend:
   
   readinessProbe:
     httpGet:
-      path: /health
+      path: /healthz
       port: http
     initialDelaySeconds: 5
     periodSeconds: 5
@@ -164,31 +168,6 @@ frontend:
   
   # Affinity
   affinity: {}
-
-# Ingress Configuration
-ingress:
-  enabled: true
-  className: "nginx"
-  
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-  
-  hosts:
-    - host: gpu-monitoring.local
-      paths:
-        - path: /api
-          pathType: Prefix
-          backend:
-            service: backend
-            port: 8080
-        - path: /
-          pathType: Prefix
-          backend:
-            service: frontend
-            port: 80
-  
-  # TLS設定（必要に応じて有効化）
-  tls: []
 
 # ServiceAccount Configuration
 serviceAccount:

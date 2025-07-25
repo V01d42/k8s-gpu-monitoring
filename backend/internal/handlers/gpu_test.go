@@ -177,7 +177,7 @@ func TestHealthCheck(t *testing.T) {
 			mockClient := &mockPrometheusClient{shouldReturnError: tt.mockError}
 			handler := NewGPUHandlerWrapper(mockClient)
 
-			req := httptest.NewRequest("GET", "/api/health", nil)
+			req := httptest.NewRequest("GET", "/api/healthz", nil)
 			w := httptest.NewRecorder()
 
 			handler.HealthCheck(w, req)

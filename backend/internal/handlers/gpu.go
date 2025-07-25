@@ -124,7 +124,7 @@ func (h *GPUHandler) GetGPUUtilization(w http.ResponseWriter, r *http.Request) {
 	h.writeJSONResponse(w, http.StatusOK, response)
 }
 
-// HealthCheck handles GET /api/health - verifies service and Prometheus connectivity.
+// HealthCheck handles GET /api/healthz - verifies service and Prometheus connectivity.
 func (h *GPUHandler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 	// Verify Prometheus server connectivity
 	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)

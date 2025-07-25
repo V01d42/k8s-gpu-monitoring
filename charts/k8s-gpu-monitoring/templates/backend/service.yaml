@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "k8s-gpu-monitoring-dev.backend.fullname" . }}
+  name: {{ include "k8s-gpu-monitoring.backend.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "k8s-gpu-monitoring-dev.backend.labels" . | nindent 4 }}
+    {{- include "k8s-gpu-monitoring.backend.labels" . | nindent 4 }}
   {{- with .Values.backend.service.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -17,6 +17,9 @@ spec:
     targetPort: {{ .Values.backend.service.targetPort }}
     protocol: TCP
     name: http
+    {{- if ( and (eq .Values.backend.service.type "NodePort" ) (not (empty .Values.backend.service.nodePort)) ) }}
+    nodePort: {{ .Values.backend.service.nodePort }}
+    {{- end }}
   selector:
-    {{- include "k8s-gpu-monitoring-dev.backend.selectorLabels" . | nindent 4 }}
+    {{- include "k8s-gpu-monitoring.backend.selectorLabels" . | nindent 4 }}
 {{- end }} 

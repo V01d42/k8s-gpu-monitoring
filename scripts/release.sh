@@ -76,28 +76,28 @@ update_files() {
     echo -e "${BLUE}Updating Helm chart files...${NC}"
     
     # Update Chart.yaml
-    "${SED_INPLACE[@]}" "s/version: .*/version: $version/" ./charts/k8s-gpu-monitoring-dev/Chart.yaml
-    "${SED_INPLACE[@]}" "s/appVersion: .*/appVersion: \"$version\"/" ./charts/k8s-gpu-monitoring-dev/Chart.yaml
+    "${SED_INPLACE[@]}" "s/version: .*/version: $version/" ./charts/k8s-gpu-monitoring/Chart.yaml
+    "${SED_INPLACE[@]}" "s/appVersion: .*/appVersion: \"$version\"/" ./charts/k8s-gpu-monitoring/Chart.yaml
     
     # Update values.yaml
-    "${SED_INPLACE[@]}" "s/tag: .*/tag: \"$version\"/g" ./charts/k8s-gpu-monitoring-dev/values.yaml
+    "${SED_INPLACE[@]}" "s/tag: .*/tag: \"$version\"/g" ./charts/k8s-gpu-monitoring/values.yaml
     
     echo -e "${GREEN}Updated files:${NC}"
-    echo "  - charts/k8s-gpu-monitoring-dev/Chart.yaml"
-    echo "  - charts/k8s-gpu-monitoring-dev/values.yaml"
+    echo "  - charts/k8s-gpu-monitoring/Chart.yaml"
+    echo "  - charts/k8s-gpu-monitoring/values.yaml"
 }
 
 # Show changes and confirm
 show_changes() {
     echo -e "\n${YELLOW}Changes to be committed:${NC}"
-    git diff --color=always ./charts/k8s-gpu-monitoring-dev/Chart.yaml ./charts/k8s-gpu-monitoring-dev/values.yaml
+    git diff --color=always ./charts/k8s-gpu-monitoring/Chart.yaml ./charts/k8s-gpu-monitoring/values.yaml
     
     echo -e "\n${YELLOW}Do you want to proceed with these changes? (y/N)${NC}"
     read -r response
     if [[ ! "$response" =~ ^[Yy]$ ]]; then
         echo -e "${RED}Release canceled${NC}"
         # Revert changes
-        git checkout -- ./charts/k8s-gpu-monitoring-dev/Chart.yaml ./charts/k8s-gpu-monitoring-dev/values.yaml
+        git checkout -- ./charts/k8s-gpu-monitoring/Chart.yaml ./charts/k8s-gpu-monitoring/values.yaml
         exit 1
     fi
 }
@@ -107,7 +107,7 @@ commit_and_push() {
     local version=$1
     
     echo -e "${BLUE}Committing changes...${NC}"
-    git add ./charts/k8s-gpu-monitoring-dev/Chart.yaml ./charts/k8s-gpu-monitoring-dev/values.yaml
+    git add ./charts/k8s-gpu-monitoring/Chart.yaml ./charts/k8s-gpu-monitoring/values.yaml
     git commit -m "chore: release v$version"
     
     echo -e "${BLUE}Creating tag v$version...${NC}"

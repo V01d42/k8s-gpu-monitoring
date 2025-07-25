@@ -35,7 +35,7 @@ nvidia_gpu_temperature_celsius
 ### 1. Helmリポジトリ追加
 ```bash
 # Helmリポジトリを追加
-helm repo add gpu-monitoring https://v01d42.github.io/k8s-gpu-monitoring-dev
+helm repo add gpu-monitoring https://v01d42.github.io/k8s-gpu-monitoring
 
 # リポジトリ更新
 helm repo update
@@ -47,7 +47,7 @@ helm search repo gpu-monitoring
 ### 2. 基本インストール
 ```bash
 # 最小構成でインストール
-helm install gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm install gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --create-namespace \
   --set backend.env.PROMETHEUS_URL=http://prometheus-server:9090 \
@@ -81,7 +81,7 @@ kubectl port-forward -n gpu-monitoring svc/gpu-monitoring-frontend 3000:80
 ```yaml
 # values.yaml
 global:
-  imageRegistry: "ghcr.io/v01d42/k8s-gpu-monitoring-dev"
+  imageRegistry: "ghcr.io/v01d42/k8s-gpu-monitoring"
   
 backend:
   enabled: true
@@ -122,7 +122,7 @@ ingress:
 
 ### カスタムPrometheus設定
 ```bash
-helm install gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm install gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --create-namespace \
   --set backend.env.PROMETHEUS_URL=http://prometheus.custom-namespace.svc.cluster.local:9090 \
@@ -199,7 +199,7 @@ frontend:
 ### .localドメインの使用（開発・個人利用）
 ```bash
 # インストール時にドメイン指定
-helm install gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm install gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --create-namespace \
   --set backend.env.PROMETHEUS_URL=http://prometheus-server:9090 \
@@ -223,14 +223,14 @@ echo "192.168.1.100 gpu-monitoring.local" | sudo tee -a /etc/hosts
 ### 外部ドメインの使用
 ```bash
 # 外部ドメインでインストール
-helm install gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm install gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --create-namespace \
   --set backend.env.PROMETHEUS_URL=http://prometheus-server:9090 \
   --set ingress.hosts[0].host=gpu-monitoring.yourdomain.com
 
 # TLS証明書を使用する場合
-helm install gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm install gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --create-namespace \
   --set backend.env.PROMETHEUS_URL=http://prometheus-server:9090 \
@@ -245,20 +245,20 @@ helm install gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
 ```bash
 # Backend API ヘルスチェック
 kubectl exec -n gpu-monitoring deployment/gpu-monitoring-backend \
-  -- wget -qO- http://localhost:8080/api/health
+  -- wget -qO- http://localhost:8080/api/healthz
 
 # 成功時のレスポンス例:
 # {"success":true,"message":"Service is healthy","data":{"status":"healthy","timestamp":"2024-01-01T12:00:00Z","version":"1.0.0"}}
 
 # Frontend ヘルスチェック
 kubectl exec -n gpu-monitoring deployment/gpu-monitoring-frontend \
-  -- wget -qO- http://localhost:80/health
+  -- wget -qO- http://localhost:80/healthz
 
 # 成功時のレスポンス: "healthy"
 
 # 外部からのヘルスチェック
-curl http://gpu-monitoring.local/api/health
-curl http://gpu-monitoring.local/health
+curl http://gpu-monitoring.local/api/healthz
+curl http://gpu-monitoring.local/healthz
 ```
 
 ### ログ確認
@@ -271,13 +271,13 @@ kubectl logs -n gpu-monitoring deployment/gpu-monitoring-backend -f
 # 2024/01/01 12:00:00 Prometheus URL: http://prometheus-server:9090
 # 2024/01/01 12:00:00 Server Port: 8080
 # 2024/01/01 12:00:00 Server starting on port 8080
-# GET /api/health 200 123µs 192.168.1.1
+# GET /api/healthz 200 123µs 192.168.1.1
 
 # Frontend ログ（Nginxアクセスログ）
 kubectl logs -n gpu-monitoring deployment/gpu-monitoring-frontend -f
 
 # 全体のログ
-kubectl logs -n gpu-monitoring -l app.kubernetes.io/name=k8s-gpu-monitoring-dev -f
+kubectl logs -n gpu-monitoring -l app.kubernetes.io/name=k8s-gpu-monitoring -f
 
 # 特定時間範囲のログ
 kubectl logs -n gpu-monitoring deployment/gpu-monitoring-backend --since=1h
@@ -322,16 +322,16 @@ helm repo update
 helm list -n gpu-monitoring
 
 # アップグレード
-helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring
 
 # 特定バージョンにアップグレード
-helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --version 1.0.1
 
 # 設定を保持してアップグレード
-helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --reuse-values
 ```
@@ -339,19 +339,19 @@ helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
 ### 設定変更
 ```bash
 # レプリカ数変更
-helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --set backend.replicas=2 \
   --set frontend.replicas=2
 
 # リソース設定変更
-helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --set backend.resources.requests.cpu=500m \
   --set backend.resources.requests.memory=512Mi
 
 # Prometheus URL変更
-helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --set backend.env.PROMETHEUS_URL=http://new-prometheus:9090
 ```
@@ -359,15 +359,15 @@ helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
 ### イメージタグ更新
 ```bash
 # 新しいイメージタグに更新
-helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --set backend.image.tag=1.0.1 \
   --set frontend.image.tag=1.0.1
 
 # GitHub Container Registryから最新イメージ取得
-helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
-  --set global.imageRegistry=ghcr.io/v01d42/k8s-gpu-monitoring-dev \
+  --set global.imageRegistry=ghcr.io/v01d42/k8s-gpu-monitoring \
   --set backend.image.tag=latest \
   --set frontend.image.tag=latest
 ```
@@ -403,7 +403,7 @@ kubectl get svc -n monitoring | grep prometheus
 kubectl get svc -n prometheus | grep prometheus
 
 # 正しいPrometheus URLに更新
-helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --set backend.env.PROMETHEUS_URL=http://prometheus-server.monitoring.svc.cluster.local:9090
 ```
@@ -429,7 +429,7 @@ kubectl get svc -n ingress-nginx ingress-nginx-controller -o jsonpath='{.status.
 #### 3. Pod起動問題
 ```bash
 # Pod状態詳細確認
-kubectl describe pod -n gpu-monitoring -l app.kubernetes.io/name=k8s-gpu-monitoring-dev
+kubectl describe pod -n gpu-monitoring -l app.kubernetes.io/name=k8s-gpu-monitoring
 
 # イベント確認
 kubectl get events -n gpu-monitoring --sort-by='.lastTimestamp'
@@ -438,19 +438,19 @@ kubectl get events -n gpu-monitoring --sort-by='.lastTimestamp'
 kubectl top nodes
 
 # ImagePullBackOff の場合
-kubectl describe pod -n gpu-monitoring -l app.kubernetes.io/name=k8s-gpu-monitoring-dev | grep -A10 "Events:"
+kubectl describe pod -n gpu-monitoring -l app.kubernetes.io/name=k8s-gpu-monitoring | grep -A10 "Events:"
 ```
 
 #### 4. イメージPull問題
 ```bash
 # イメージPull詳細確認
-kubectl describe pod -n gpu-monitoring -l app.kubernetes.io/name=k8s-gpu-monitoring-dev | grep -A5 "Failed"
+kubectl describe pod -n gpu-monitoring -l app.kubernetes.io/name=k8s-gpu-monitoring | grep -A5 "Failed"
 
 # 現在のイメージタグ確認
 helm get values gpu-monitoring -n gpu-monitoring | grep tag
 
 # イメージが存在するか確認（GitHub Container Registry）
-# https://github.com/V01d42/k8s-gpu-monitoring-dev/pkgs/container/k8s-gpu-monitoring-dev%2Fbackend
+# https://github.com/V01d42/k8s-gpu-monitoring/pkgs/container/k8s-gpu-monitoring%2Fbackend
 
 # プライベートレジストリの場合はImagePullSecrets設定
 kubectl create secret docker-registry ghcr-secret \
@@ -459,7 +459,7 @@ kubectl create secret docker-registry ghcr-secret \
   --docker-password=YOUR_TOKEN \
   --namespace gpu-monitoring
 
-helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --set global.imagePullSecrets[0].name=ghcr-secret
 ```
@@ -473,7 +473,7 @@ kubectl logs -n gpu-monitoring deployment/gpu-monitoring-frontend
 # F12 -> Network -> XHR を確認してAPI通信をチェック
 
 # API通信の確認
-curl http://gpu-monitoring.local/api/health
+curl http://gpu-monitoring.local/api/healthz
 curl http://gpu-monitoring.local/api/v1/gpu/metrics
 
 # フロントエンドからバックエンドへの通信確認
@@ -493,7 +493,7 @@ helm history gpu-monitoring -n gpu-monitoring
 helm get manifest gpu-monitoring -n gpu-monitoring
 
 # ドライラン（実際にはデプロイせずに検証）
-helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --dry-run --debug
 
@@ -513,13 +513,13 @@ kubectl get pv,pvc -n gpu-monitoring
 watch kubectl top pods -n gpu-monitoring
 
 # メモリ不足の場合
-helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --set backend.resources.requests.memory=512Mi \
   --set backend.resources.limits.memory=1Gi
 
 # CPU使用率が高い場合
-helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm upgrade gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --set backend.resources.requests.cpu=500m \
   --set backend.resources.limits.cpu=1000m
@@ -583,7 +583,7 @@ ingress:
 ```yaml
 # personal.yaml（推奨設定）
 global:
-  imageRegistry: "ghcr.io/v01d42/k8s-gpu-monitoring-dev"
+  imageRegistry: "ghcr.io/v01d42/k8s-gpu-monitoring"
 
 backend:
   replicas: 1
@@ -640,7 +640,7 @@ rm -f gpu-monitoring-values.yaml
 helm uninstall gpu-monitoring --namespace gpu-monitoring
 
 # 後で再インストールする場合
-helm install gpu-monitoring gpu-monitoring/k8s-gpu-monitoring-dev \
+helm install gpu-monitoring gpu-monitoring/k8s-gpu-monitoring \
   --namespace gpu-monitoring \
   --set backend.env.PROMETHEUS_URL=http://prometheus-server:9090
 ```
