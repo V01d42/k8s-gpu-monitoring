@@ -7,6 +7,37 @@ entries:
         name: gpu-monitoring-frontend  \n  image: ghcr.io/v01d42/k8s-gpu-monitoring-dev/frontend:1.0.0\n"
       licenses: MIT
     apiVersion: v2
+    appVersion: 0.0.3
+    created: "2025-07-25T02:15:40.853746391Z"
+    description: 'Kubernetes GPU Monitoring Dashboard - A comprehensive solution for
+      monitoring  GPU resources in Kubernetes clusters with Prometheus metrics and
+      real-time dashboard. '
+    digest: 0c817ac71a67143955b486f63398df97a98018ab9dd776d363a9b595a3d65933
+    home: https://github.com/V01d42/k8s-gpu-monitoring-dev
+    keywords:
+    - gpu
+    - monitoring
+    - prometheus
+    - kubernetes
+    - nvidia
+    - dashboard
+    - metrics
+    maintainers:
+    - name: V01d42
+      url: https://github.com/V01d42
+    name: k8s-gpu-monitoring-dev
+    sources:
+    - https://github.com/V01d42/k8s-gpu-monitoring-dev
+    type: application
+    urls:
+    - https://github.com/V01d42/k8s-gpu-monitoring/releases/download/k8s-gpu-monitoring-dev-0.0.3/k8s-gpu-monitoring-dev-0.0.3.tgz
+    version: 0.0.3
+  - annotations:
+      category: Monitoring
+      images: "- name: gpu-monitoring-backend\n  image: ghcr.io/v01d42/k8s-gpu-monitoring-dev/backend:1.0.0\n-
+        name: gpu-monitoring-frontend  \n  image: ghcr.io/v01d42/k8s-gpu-monitoring-dev/frontend:1.0.0\n"
+      licenses: MIT
+    apiVersion: v2
     appVersion: 0.0.2
     created: "2025-07-25T01:52:27.364302092Z"
     description: 'Kubernetes GPU Monitoring Dashboard - A comprehensive solution for
@@ -32,4 +63,4 @@ entries:
     urls:
     - https://github.com/V01d42/k8s-gpu-monitoring/releases/download/k8s-gpu-monitoring-dev-0.0.2/k8s-gpu-monitoring-dev-0.0.2.tgz
     version: 0.0.2
-generated: "2025-07-25T01:52:27.364322941Z"
+generated: "2025-07-25T02:15:40.853761559Z"
