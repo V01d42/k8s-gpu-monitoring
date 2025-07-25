@@ -103,13 +103,13 @@ frontend:
   replicas: 1
   
   # Container port
-  containerPort: 5173
+  containerPort: 80
   
   # Service configuration
   service:
     type: NodePort
-    port: 5173
-    targetPort: 5173
+    port: 80
+    targetPort: 80
     # NodePort configuration (only used when type is NodePort)
     nodePort: 32173  # Optional: specify a specific NodePort (30000-32767 range)
     annotations: {}
