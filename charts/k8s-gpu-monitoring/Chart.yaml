@@ -24,13 +24,4 @@ maintainers:
   - name: V01d42
     url: https://github.com/V01d42
 
-annotations:
-  category: Monitoring
-  licenses: MIT
-  images: |
-    - name: gpu-monitoring-backend
-      image: ghcr.io/v01d42/k8s-gpu-monitoring/backend:1.0.0
-    - name: gpu-monitoring-frontend  
-      image: ghcr.io/v01d42/k8s-gpu-monitoring/frontend:1.0.0
-
 dependencies: [] 
