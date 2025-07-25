@@ -27,6 +27,8 @@ backend:
     type: ClusterIP
     port: 8080
     targetPort: 8080
+    # NodePort configuration (only used when type is NodePort)
+    # nodePort: 30080  # Optional: specify a specific NodePort (30000-32767 range)
     annotations: {}
   
   # Resource requirements
@@ -108,7 +110,8 @@ frontend:
     type: NodePort
     port: 5173
     targetPort: 5173
-    nodePort: 35173
+    # NodePort configuration (only used when type is NodePort)
+    nodePort: 32173  # Optional: specify a specific NodePort (30000-32767 range)
     annotations: {}
   
   # Resource requirements

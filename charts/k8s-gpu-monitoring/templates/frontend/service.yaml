@@ -17,6 +17,9 @@ spec:
     targetPort: {{ .Values.frontend.service.targetPort }}
     protocol: TCP
     name: http
+    {{- if ( and (eq .Values.frontend.service.type "NodePort" ) (not (empty .Values.frontend.service.nodePort)) ) }}
+    nodePort: {{ .Values.frontend.service.nodePort }}
+    {{- end }}
   selector:
     {{- include "k8s-gpu-monitoring.frontend.selectorLabels" . | nindent 4 }}
 {{- end }} 
