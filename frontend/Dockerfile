@@ -1,17 +1,10 @@
-# Multi-stage build for React frontend
+# Build stage
 FROM node:20-alpine AS builder
-
-# Set working directory
 WORKDIR /app
-
-# Copy source code
 COPY . .
+RUN npm ci && npm run build
 
-# Install all dependencies (including devDependencies for build)
-RUN npm ci
-
-# Expose port
+# Production stage
+FROM nginx:alpine
+COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 5173
-
-# Start Vite development server
-CMD ["npm", "run", "dev"]
