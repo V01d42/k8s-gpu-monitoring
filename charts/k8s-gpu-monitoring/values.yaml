@@ -103,7 +103,7 @@ frontend:
   replicas: 1
   
   # Container port
-  containerPort: 80
+  containerPort: 8080
   
   # Service configuration
   service:
