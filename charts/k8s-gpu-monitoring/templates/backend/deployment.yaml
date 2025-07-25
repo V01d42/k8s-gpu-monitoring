@@ -55,16 +55,6 @@ spec:
         {{- end }}
         resources:
           {{- toYaml .Values.backend.resources | nindent 10 }}
-        volumeMounts:
-        - name: tmp
-          mountPath: /tmp
-        - name: cache
-          mountPath: /app/cache
-      volumes:
-      - name: tmp
-        emptyDir: {}
-      - name: cache
-        emptyDir: {}
       {{- with .Values.backend.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -101,13 +101,13 @@ frontend:
   replicas: 1
   
   # Container port
-  containerPort: 80
+  containerPort: 5173
   
   # Service configuration
   service:
     type: ClusterIP
-    port: 80
-    targetPort: 80
+    port: 5173
+    targetPort: 5173
     annotations: {}
   
   # Resource requirements
