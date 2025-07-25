@@ -105,9 +105,10 @@ frontend:
   
   # Service configuration
   service:
-    type: ClusterIP
+    type: NodePort
     port: 5173
     targetPort: 5173
+    nodePort: 35173
     annotations: {}
   
   # Resource requirements
@@ -164,31 +165,6 @@ frontend:
   
   # Affinity
   affinity: {}
-
-# Ingress Configuration
-ingress:
-  enabled: true
-  className: "nginx"
-  
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-  
-  hosts:
-    - host: gpu-monitoring.local
-      paths:
-        - path: /api
-          pathType: Prefix
-          backend:
-            service: backend
-            port: 8080
-        - path: /
-          pathType: Prefix
-          backend:
-            service: frontend
-            port: 80
-  
-  # TLS設定（必要に応じて有効化）
-  tls: []
 
 # ServiceAccount Configuration
 serviceAccount:
