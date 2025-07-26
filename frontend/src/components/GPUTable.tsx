@@ -9,7 +9,27 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import * as React from "react";
 
 import type { GpuRow } from "../types/gpu";
+
+import type { ApiResponse, GPUMetrics } from "../types/api";
 import { mockGpuMetrics } from "../types/api.mock";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
+/**
+ * Fetch GPU metrics from the API. If the request fails, return mock data.
+ */
+async function fetchGpuMetricsWithFallback(): Promise<
+  ApiResponse<GPUMetrics[]>
+> {
+  try {
+    const res = await fetch(`${API_BASE_URL}api/v1/gpu/metrics`);
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    const data = (await res.json()) as ApiResponse<GPUMetrics[]>;
+    return data;
+  } catch (e) {
+    console.log("Failed to fetch GPU metrics:", e);
+    console.log("use mock data due to fetch error");
+    return mockGpuMetrics;
+  }
+}
 
 type Order = "asc" | "desc";
 type GpuRowKey = keyof GpuRow;
@@ -60,12 +80,16 @@ export default function GPUTable() {
     setOrderBy(property);
   };
 
+  const [rows, setRows] = React.useState<GPUMetrics[]>([]);
+  React.useEffect(() => {
+    fetchGpuMetricsWithFallback().then((res) => {
+      setRows(res.data ?? []);
+    });
+  }, []);
+
   const sortedRows = React.useMemo(
-    () =>
-      mockGpuMetrics.data
-        ? [...mockGpuMetrics.data].sort(getComparator<GpuRow>(order, orderBy))
-        : [],
-    [order, orderBy]
+    () => [...rows].sort(getComparator<GpuRow>(order, orderBy)),
+    [rows, order, orderBy]
   );
 
   return (
