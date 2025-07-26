@@ -1,7 +1,3 @@
-
-
-
-
 export default function GPUTable() {
   return (
     <div>
