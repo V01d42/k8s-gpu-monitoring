@@ -12,7 +12,7 @@ import type { GpuRow } from "../types/gpu";
 
 import type { ApiResponse, GPUMetrics } from "../types/api";
 import { mockGpuMetrics } from "../types/api.mock";
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
+const API_BASE_URL = import.meta.env.API_BASE_URL || "";
 /**
  * Fetch GPU metrics from the API. If the request fails, return mock data.
  */
