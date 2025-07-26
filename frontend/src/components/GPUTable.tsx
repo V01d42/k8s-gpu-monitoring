@@ -12,7 +12,7 @@ import type { GpuRow } from "../types/gpu";
 
 import type { ApiResponse, GPUMetrics } from "../types/api";
 import { mockGpuMetrics } from "../types/api.mock";
-const API_BASE_URL = import.meta.env.API_BASE_URL || "";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 /**
  * Fetch GPU metrics from the API. If the request fails, return mock data.
  */
@@ -20,7 +20,10 @@ async function fetchGpuMetricsWithFallback(): Promise<
   ApiResponse<GPUMetrics[]>
 > {
   try {
-    const res = await fetch(`${API_BASE_URL}api/v1/gpu/metrics`);
+    console.log(
+      `Fetching GPU metrics from: ${API_BASE_URL}/api/v1/gpu/metrics`
+    );
+    const res = await fetch(`${API_BASE_URL}/api/v1/gpu/metrics`);
     if (!res.ok) throw new Error(`API error: ${res.status}`);
     const data = (await res.json()) as ApiResponse<GPUMetrics[]>;
     return data;
