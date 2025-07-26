@@ -2,6 +2,32 @@ apiVersion: v1
 entries:
   k8s-gpu-monitoring:
   - apiVersion: v2
+    appVersion: 0.2.2
+    created: "2025-07-26T07:59:43.601702719Z"
+    description: 'Kubernetes GPU Monitoring Dashboard - A comprehensive solution for
+      monitoring  GPU resources in Kubernetes clusters with Prometheus metrics and
+      real-time dashboard. '
+    digest: 0e50acd9951aa59c6f7b8f791b7c4c7d4dd656d1bb2fd55c4ba6d6d7a6a0e26a
+    home: https://github.com/V01d42/k8s-gpu-monitoring
+    keywords:
+    - gpu
+    - monitoring
+    - prometheus
+    - kubernetes
+    - nvidia
+    - dashboard
+    - metrics
+    maintainers:
+    - name: V01d42
+      url: https://github.com/V01d42
+    name: k8s-gpu-monitoring
+    sources:
+    - https://github.com/V01d42/k8s-gpu-monitoring
+    type: application
+    urls:
+    - https://github.com/V01d42/k8s-gpu-monitoring/releases/download/k8s-gpu-monitoring-0.2.2/k8s-gpu-monitoring-0.2.2.tgz
+    version: 0.2.2
+  - apiVersion: v2
     appVersion: 0.2.1
     created: "2025-07-26T06:58:02.560907187Z"
     description: 'Kubernetes GPU Monitoring Dashboard - A comprehensive solution for
@@ -480,4 +506,4 @@ entries:
     urls:
     - https://github.com/V01d42/k8s-gpu-monitoring/releases/download/k8s-gpu-monitoring-dev-0.0.2/k8s-gpu-monitoring-dev-0.0.2.tgz
     version: 0.0.2
-generated: "2025-07-26T06:58:02.561023322Z"
+generated: "2025-07-26T07:59:43.601828403Z"
