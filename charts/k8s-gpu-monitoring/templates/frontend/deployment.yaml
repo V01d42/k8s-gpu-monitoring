@@ -60,10 +60,14 @@ spec:
             mountPath: /var/cache/nginx
           - name: run-dir
             mountPath: /run
+          - name: nginx-conf
+            mountPath: /etc/nginx/conf.d
       volumes:
         - name: nginx-cache
           emptyDir: {}
         - name: run-dir
+          emptyDir: {}
+        - name: nginx-conf
           emptyDir: {}
       {{- with .Values.frontend.nodeSelector }}
       nodeSelector:
