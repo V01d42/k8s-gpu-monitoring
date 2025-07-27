@@ -124,7 +124,8 @@ frontend:
       memory: "256Mi"
   
   # Environment variables
-  env: {}
+  env:
+    API_BASE_URL: "http://k8s-gpu-monitoring-backend:8080"
   
   # Liveness and readiness probes
   livenessProbe:

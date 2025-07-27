@@ -60,16 +60,7 @@ spec:
             mountPath: /var/cache/nginx
           - name: run-dir
             mountPath: /run
-          - name: app-config
-            mountPath: /usr/share/nginx/html/appConfig.js
-            subPath: appConfig.js
-            readOnly: true
       volumes:
-        - name: app-config
-          configMap:
-            defaultMode: 420
-            name: {{ include "k8s-gpu-monitoring.frontend.fullname" . }}
-            optional: true
         - name: nginx-cache
           emptyDir: {}
         - name: run-dir

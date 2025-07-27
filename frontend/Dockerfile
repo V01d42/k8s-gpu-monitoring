@@ -6,6 +6,6 @@ RUN npm ci && npm run build
 
 # Production stage
 FROM nginx:alpine
-COPY default.conf /etc/nginx/conf.d/default.conf
+COPY default.conf.template /etc/nginx/templates/default.conf.template
 COPY --from=builder /app/dist /usr/share/nginx/html
 EXPOSE 8080
