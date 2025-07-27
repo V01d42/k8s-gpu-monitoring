@@ -1,0 +1,18 @@
+{{- if .Values.frontend.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "k8s-gpu-monitoring.frontend.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "k8s-gpu-monitoring.frontend.labels" . | nindent 4 }}
+  {{- with (include "k8s-gpu-monitoring.annotations" .) }}
+  annotations:
+    {{- . | nindent 4 }}
+  {{- end }}
+data:
+  appConfig.js: |
+    var appConfig = {
+      VITE_API_BASE_URL: "http://{{ include "k8s-gpu-monitoring.backend.fullname" . }}:{{ .Values.backend.service.port }}"
+    };
+{{- end }}

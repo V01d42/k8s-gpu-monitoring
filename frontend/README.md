@@ -1,5 +1,23 @@
 # React + TypeScript + Vite
 
+## Environment Setting
+
+### Dev Environment
+
+In Dev Envirronment, Create `public/appConfig.js`.
+
+```javascript
+var appConfig = {
+  VITE_API_BASE_URL: "http://localhost:8080"  // backend URL
+};
+```
+
+### Prod Environment
+
+In Dev Envirronment, set `public/appConfig.js` from Kubernetes ConfigMap.
+
+## Development
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

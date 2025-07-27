@@ -103,6 +103,7 @@ lerna-debug.log*
 # Configuration files (if sensitive)
 config.local.*
 *.local.json
+appConfig.js
 
 # =======================================================
 # Development Tools

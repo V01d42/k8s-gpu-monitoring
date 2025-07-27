@@ -41,8 +41,6 @@ spec:
         securityContext:
           {{- toYaml .Values.frontend.containerSecurityContext | nindent 10 }}
         env:
-        - name: VITE_API_BASE_URL
-          value: "http://{{ include "k8s-gpu-monitoring.backend.fullname" . }}:{{ .Values.backend.service.port }}"
         {{- range $key, $value := .Values.frontend.env }}
         - name: {{ $key }}
           value: {{ $value | quote }}
@@ -62,7 +60,16 @@ spec:
             mountPath: /var/cache/nginx
           - name: run-dir
             mountPath: /run
+          - name: app-config
+            mountPath: /usr/share/nginx/html/appConfig.js
+            subPath: appConfig.js
+            readOnly: true
       volumes:
+        - name: app-config
+          configMap:
+            defaultMode: 420
+            name: {{ include "k8s-gpu-monitoring.frontend.fullname" . }}
+            optional: true
         - name: nginx-cache
           emptyDir: {}
         - name: run-dir
