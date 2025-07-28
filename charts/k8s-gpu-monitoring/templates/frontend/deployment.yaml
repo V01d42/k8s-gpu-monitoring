@@ -41,6 +41,8 @@ spec:
         securityContext:
           {{- toYaml .Values.frontend.containerSecurityContext | nindent 10 }}
         env:
+        - name: API_BASE_URL
+          value: "http://{{ include "k8s-gpu-monitoring.backend.fullname" . }}:{{ .Values.backend.service.port }}"
         {{- range $key, $value := .Values.frontend.env }}
         - name: {{ $key }}
           value: {{ $value | quote }}
