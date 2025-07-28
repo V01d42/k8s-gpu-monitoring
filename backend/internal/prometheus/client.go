@@ -164,17 +164,17 @@ func (c *Client) parseGPUMetrics(results map[string]*PrometheusResponse) ([]mode
 				// Set value based on metric type
 				switch metricType {
 				case "utilization":
-					metricsMap[key].Utilization = value // Already in percentage format
+					metricsMap[key].Utilization = value
 				case "memory_used":
-					metricsMap[key].MemoryUsed = value / (1024 * 1024 * 1024) // bytes to GB
+					metricsMap[key].MemoryUsed = int(value)
 				case "memory_total":
-					metricsMap[key].MemoryTotal = value / (1024 * 1024 * 1024) // bytes to GB
+					metricsMap[key].MemoryTotal = int(value)
 				case "memory_free":
-					metricsMap[key].MemoryFree = value / (1024 * 1024 * 1024) // bytes to GB
+					metricsMap[key].MemoryFree = int(value)
 				case "memory_utilization":
-					metricsMap[key].MemoryUtilization = value // Already in percentage format
+					metricsMap[key].MemoryUtilization = int(value)
 				case "temperature":
-					metricsMap[key].Temperature = value
+					metricsMap[key].Temperature = int(value)
 				}
 			}
 		}

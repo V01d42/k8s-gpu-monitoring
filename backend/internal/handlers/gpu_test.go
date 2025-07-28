@@ -40,8 +40,6 @@ func (m *mockPrometheusClient) GetGPUMetrics(ctx context.Context) ([]models.GPUM
 			MemoryFree:        8.0,
 			MemoryUtilization: 50.0,
 			Temperature:       65.0,
-			PowerDraw:         250.0,
-			PowerLimit:        300.0,
 		},
 	}, nil
 }
