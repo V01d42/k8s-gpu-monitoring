@@ -6,22 +6,21 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import * as React from "react";
-
-import type { GpuRow } from "../types/gpu";
+import { useMemo, useState, useEffect } from "react";
 
 import type { ApiResponse, GPUMetrics } from "../types/api";
 import { mockGpuMetrics } from "../types/api.mock";
 import { getConfig } from "../utils/config";
+import { getComparator } from "../utils/sort";
 
 const config = getConfig();
 const API_BASE_URL = config.API_BASE_URL;
 /**
  * Fetch GPU metrics from the API. If the request fails, return mock data.
  */
-async function fetchGpuMetricsWithFallback(): Promise<
+const fetchGpuMetricsWithFallback = async (): Promise<
   ApiResponse<GPUMetrics[]>
-> {
+> => {
   try {
     console.log(
       `Fetching GPU metrics from: ${API_BASE_URL}/api/v1/gpu/metrics`
@@ -35,50 +34,29 @@ async function fetchGpuMetricsWithFallback(): Promise<
     console.log("use mock data due to fetch error");
     return mockGpuMetrics;
   }
-}
+};
 
 type Order = "asc" | "desc";
-type GpuRowKey = keyof GpuRow;
+type GpuRowKey = keyof GPUMetrics;
 
 const columns: {
   id: GpuRowKey;
   label: string;
-  align?: "right" | "center" | "left";
 }[] = [
-  { id: "node_name", label: "node_name", align: "right" },
-  { id: "timestamp", label: "timestamp", align: "right" },
-  { id: "gpu_index", label: "gpu_index", align: "right" },
-  { id: "gpu_name", label: "gpu_name", align: "right" },
-  { id: "utilization", label: "utilization (%)", align: "right" },
-  { id: "memory_used", label: "memory_used (MiB)", align: "right" },
-  { id: "memory_total", label: "memory_total (MiB)", align: "right" },
-  { id: "memory_utilization", label: "memory_utilization (%)", align: "right" },
-  { id: "temperature", label: "temperature (°C)", align: "right" },
-  { id: "power_draw", label: "power_draw (W)", align: "right" },
-  { id: "power_limit", label: "power_limit (W)", align: "right" },
+  { id: "node_name", label: "node_name" },
+  { id: "timestamp", label: "timestamp" },
+  { id: "gpu_index", label: "index" },
+  { id: "gpu_name", label: "name" },
+  { id: "utilization", label: "utilization (%)" },
+  { id: "memory_used", label: "memory_used (MiB)" },
+  { id: "memory_total", label: "memory_total (MiB)" },
+  { id: "memory_utilization", label: "memory_utilization (%)" },
+  { id: "temperature", label: "temperature (°C)" },
 ];
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  const aValue = a[orderBy];
-  const bValue = b[orderBy];
-  if (typeof aValue === "number" && typeof bValue === "number") {
-    return bValue - aValue;
-  }
-  if (typeof aValue === "string" && typeof bValue === "string") {
-    return bValue.localeCompare(aValue);
-  }
-  return 0;
-}
-
-function getComparator<T>(order: Order, orderBy: keyof T) {
-  return order === "desc"
-    ? (a: T, b: T) => descendingComparator(a, b, orderBy)
-    : (a: T, b: T) => -descendingComparator(a, b, orderBy);
-}
-
-export default function GPUTable() {
-  const [order, setOrder] = React.useState<Order>("asc");
-  const [orderBy, setOrderBy] = React.useState<GpuRowKey>("gpu_index");
+const GPUTable = () => {
+  const [order, setOrder] = useState<Order>("asc");
+  const [orderBy, setOrderBy] = useState<GpuRowKey>("node_name");
 
   const handleRequestSort = (property: GpuRowKey) => {
     const isAsc = orderBy === property && order === "asc";
@@ -86,17 +64,29 @@ export default function GPUTable() {
     setOrderBy(property);
   };
 
-  const [rows, setRows] = React.useState<GPUMetrics[]>([]);
-  React.useEffect(() => {
+  const [rows, setRows] = useState<GPUMetrics[]>([]);
+  useEffect(() => {
     fetchGpuMetricsWithFallback().then((res) => {
       setRows(res.data ?? []);
     });
   }, []);
 
-  const sortedRows = React.useMemo(
-    () => [...rows].sort(getComparator<GpuRow>(order, orderBy)),
-    [rows, order, orderBy]
-  );
+  // ソート
+  const sortedRows = useMemo(() => {
+    const arr = [...rows];
+    if (orderBy === "node_name") {
+      // node_nameでソート時は、node_name→gpu_indexの複合ソート
+      return arr.sort((a, b) => {
+        const nodeComp =
+          order === "asc"
+            ? a.node_name.localeCompare(b.node_name)
+            : b.node_name.localeCompare(a.node_name);
+        return nodeComp || a.gpu_index - b.gpu_index;
+      });
+    }
+    // 他のカラムは通常のソート
+    return arr.sort(getComparator<GPUMetrics>(order, orderBy));
+  }, [rows, order, orderBy]);
 
   return (
     <TableContainer component={Paper}>
@@ -113,14 +103,15 @@ export default function GPUTable() {
             {columns.map((col, colIdx) => (
               <TableCell
                 key={col.id}
-                align={col.align || "left"}
+                align="left"
                 sortDirection={orderBy === col.id ? order : false}
                 sx={{
+                  height: 12,
+                  padding: "8px 4px",
                   borderRight:
                     colIdx !== columns.length - 1
                       ? "1px solid #e0e0e0"
                       : undefined,
-                  // Optionally, add left border for first column
                   borderLeft: colIdx === 0 ? "1px solid #e0e0e0" : undefined,
                 }}
               >
@@ -141,8 +132,10 @@ export default function GPUTable() {
               {columns.map((col, colIdx) => (
                 <TableCell
                   key={col.id}
-                  align={col.align || "left"}
+                  align="left"
                   sx={{
+                    height: 4,
+                    padding: "8px 4px",
                     borderRight:
                       colIdx !== columns.length - 1
                         ? "1px solid #e0e0e0"
@@ -159,4 +152,5 @@ export default function GPUTable() {
       </Table>
     </TableContainer>
   );
-}
+};
+export default GPUTable;

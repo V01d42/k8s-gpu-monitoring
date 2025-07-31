@@ -7,7 +7,5 @@ export type GpuRow = {
   memory_total: number;
   memory_utilization: number;
   temperature: number;
-  power_draw: number;
-  power_limit: number;
   timestamp: string;
 };
