@@ -11,6 +11,7 @@ import { useMemo, useState, useEffect } from "react";
 import type { ApiResponse, GPUMetrics } from "../types/api";
 import { mockGpuMetrics } from "../types/api.mock";
 import { getConfig } from "../utils/config";
+import { convertGPUMetrics } from "../utils/convert";
 import { getComparator } from "../utils/sort";
 
 const config = getConfig();
@@ -67,7 +68,11 @@ const GPUTable = () => {
   const [rows, setRows] = useState<GPUMetrics[]>([]);
   useEffect(() => {
     fetchGpuMetricsWithFallback().then((res) => {
-      setRows(res.data ?? []);
+      if (!res.data){
+        return [];
+      }
+      convertGPUMetrics(res.data);
+      setRows(res.data);
     });
   }, []);
 
