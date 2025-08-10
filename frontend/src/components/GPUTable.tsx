@@ -56,6 +56,7 @@ const columns: {
 ];
 
 const GPUTable = () => {
+  const { searchText } = useContext(searchContext);
   const [order, setOrder] = useState<Order>("asc");
   const [orderBy, setOrderBy] = useState<GpuRowKey>("node_name");
 
@@ -74,7 +75,9 @@ const GPUTable = () => {
 
   // ソート
   const sortedRows = useMemo(() => {
-    const arr = [...rows];
+    const arr = rows.filter(({node_name}) => {
+      return node_name.indexOf(searchText) > -1;
+    });
     if (orderBy === "node_name") {
       // node_nameでソート時は、node_name→gpu_indexの複合ソート
       return arr.sort((a, b) => {
@@ -87,7 +90,7 @@ const GPUTable = () => {
     }
     // 他のカラムは通常のソート
     return arr.sort(getComparator<GPUMetrics>(order, orderBy));
-  }, [rows, order, orderBy]);
+  }, [rows, order, orderBy, searchText]);
 
   return (
     <TableContainer component={Paper}>

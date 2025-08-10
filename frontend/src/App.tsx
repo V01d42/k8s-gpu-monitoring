@@ -7,9 +7,13 @@ import { searchContext } from "./utils/contexts";
 
 function App() {
   const routing = useRoutes(routes);
+  const [searchText, setSearchText] = useState<string>('');
+
   return (
+  <searchContext.Provider value={{searchText, setSearchText}}>
     <TopMenu />
     {routing}
+  </searchContext.Provider>
   );
 }
 

@@ -46,6 +46,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const TopMenu = () => {
+  const {searchText, setSearchText} = useContext(searchContext)
     return (
         <>
         <Box sx={{ flexGrow: 1 }}>
@@ -56,7 +57,7 @@ const TopMenu = () => {
                     <SearchIconWrapper>
                         <SearchIcon/>
                     </SearchIconWrapper>
-                    <StyledInputBase placeholder="Hostname or GPU's name..."/>
+                    <StyledInputBase placeholder="Hostname or GPU's name..." value={searchText} onChange={(e) => setSearchText(e.target.value)}/>
                 </SearchFieldWrapper>
             </Toolbar>
         </AppBar>
