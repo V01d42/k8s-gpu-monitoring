@@ -14,7 +14,7 @@ import type { ApiResponse, GPUMetrics } from "../types/api";
 import { mockGpuMetrics } from "../types/api.mock";
 import { getConfig } from "../utils/config";
 import { getComparator } from "../utils/sort";
-import { isUseIntence } from "../utils/usage";
+import { isHighUsage } from "../utils/usage";
 
 const config = getConfig();
 const API_BASE_URL = config.API_BASE_URL;
@@ -70,15 +70,15 @@ const GPUTable = () => {
 
   const [rows, setRows] = useState<GPUMetrics[]>([]);
 
-  const fetchAndUpdate = ()=>{
+  const fetchAndUpdate = () => {
     fetchGpuMetricsWithFallback().then((res) => {
       setIsLoading(false);
       setRows(res.data ?? []);
     });
-  }
+  };
 
   useEffect(() => {
-    fetchAndUpdate()
+    fetchAndUpdate();
   }, []);
 
   // ソート
@@ -101,88 +101,91 @@ const GPUTable = () => {
   return (
     <>
       <IconButton
-      onClick={()=>{
-        setIsLoading(true);
-        fetchAndUpdate();
-      }}
-      disabled={isLoading} 
-      sx={{
-        display: "flex",
-        height: '40px',
-        width: '40px',
-        alignItems: 'center',
-        alignContent: 'center',
-        margin: '0 0 0 auto'
+        onClick={() => {
+          setIsLoading(true);
+          fetchAndUpdate();
+        }}
+        disabled={isLoading}
+        sx={{
+          display: "flex",
+          height: "40px",
+          width: "40px",
+          alignItems: "center",
+          alignContent: "center",
+          margin: "0 0 0 auto",
         }}
       >
         {isLoading ? <CircularProgress size="20px" /> : <RefreshIcon />}
       </IconButton>
-      {
-        isLoading || 
-    <TableContainer component={Paper}>
-      <Table
-        sx={{
-          width: "100%",
-          borderCollapse: "separate",
-          borderSpacing: 0,
-        }}
-        aria-label="gpu table"
-      >
-        <TableHead>
-          <TableRow>
-            {columns.map((col, colIdx) => (
-              <TableCell
-                key={col.id}
-                align="left"
-                sortDirection={orderBy === col.id ? order : false}
-                sx={{
-                  height: 12,
-                  padding: "8px 4px",
-                  borderRight:
-                    colIdx !== columns.length - 1
-                      ? "1px solid #e0e0e0"
-                      : undefined,
-                  borderLeft: colIdx === 0 ? "1px solid #e0e0e0" : undefined,
-                }}
-              >
-                <TableSortLabel
-                  active={orderBy === col.id}
-                  direction={orderBy === col.id ? order : "asc"}
-                  onClick={() => handleRequestSort(col.id)}
-                >
-                  {col.label}
-                </TableSortLabel>
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {sortedRows.map((row, idx) => (
-            <TableRow key={row.node_name + "-" + row.gpu_index + "-" + idx}>
-              {columns.map((col, colIdx) => (
-                <TableCell
-                  key={col.id}
-                  align="left"
-                  sx={{
-                    height: 4,
-                    padding: "8px 4px",
-                    borderRight:
-                      colIdx !== columns.length - 1
-                        ? "1px solid #e0e0e0"
-                        : undefined,
-                    borderLeft: colIdx === 0 ? "1px solid #e0e0e0" : undefined,
-                        backgroundColor: isUseIntence(col.id, row[col.id]) ? 'red' : 'white',
-                  }}
-                >
-                  {row[col.id]}
-                </TableCell>
+      {isLoading || (
+        <TableContainer component={Paper}>
+          <Table
+            sx={{
+              width: "100%",
+              borderCollapse: "separate",
+              borderSpacing: 0,
+            }}
+            aria-label="gpu table"
+          >
+            <TableHead>
+              <TableRow>
+                {columns.map((col, colIdx) => (
+                  <TableCell
+                    key={col.id}
+                    align="left"
+                    sortDirection={orderBy === col.id ? order : false}
+                    sx={{
+                      height: 12,
+                      padding: "8px 4px",
+                      borderRight:
+                        colIdx !== columns.length - 1
+                          ? "1px solid #e0e0e0"
+                          : undefined,
+                      borderLeft:
+                        colIdx === 0 ? "1px solid #e0e0e0" : undefined,
+                    }}
+                  >
+                    <TableSortLabel
+                      active={orderBy === col.id}
+                      direction={orderBy === col.id ? order : "asc"}
+                      onClick={() => handleRequestSort(col.id)}
+                    >
+                      {col.label}
+                    </TableSortLabel>
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {sortedRows.map((row, idx) => (
+                <TableRow key={row.node_name + "-" + row.gpu_index + "-" + idx}>
+                  {columns.map((col, colIdx) => (
+                    <TableCell
+                      key={col.id}
+                      align="left"
+                      sx={{
+                        height: 4,
+                        padding: "8px 4px",
+                        borderRight:
+                          colIdx !== columns.length - 1
+                            ? "1px solid #e0e0e0"
+                            : undefined,
+                        borderLeft:
+                          colIdx === 0 ? "1px solid #e0e0e0" : undefined,
+                        backgroundColor: isHighUsage(col.id, row[col.id])
+                          ? "#ef9a9a"
+                          : "white",
+                      }}
+                    >
+                      {row[col.id]}
+                    </TableCell>
+                  ))}
+                </TableRow>
               ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-      }
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </>
   );
 };
