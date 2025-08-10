@@ -69,11 +69,16 @@ const GPUTable = () => {
   };
 
   const [rows, setRows] = useState<GPUMetrics[]>([]);
-  useEffect(() => {
+
+  const fetchAndUpdate = ()=>{
     fetchGpuMetricsWithFallback().then((res) => {
       setIsLoading(false);
       setRows(res.data ?? []);
     });
+  }
+
+  useEffect(() => {
+    fetchAndUpdate()
   }, []);
 
   // ソート
@@ -98,6 +103,7 @@ const GPUTable = () => {
       <IconButton
       onClick={()=>{
         setIsLoading(true);
+        fetchAndUpdate();
       }}
       disabled={isLoading} 
       sx={{
