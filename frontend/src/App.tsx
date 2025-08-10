@@ -4,8 +4,10 @@ import "./App.css";
 
 function App() {
   const routing = useRoutes(routes);
-
-  return <>{routing}</>;
+  return (
+    <TopMenu />
+    {routing}
+  );
 }
 
 export default App;
