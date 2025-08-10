@@ -1,17 +1,20 @@
+import RefreshIcon from "@mui/icons-material/Refresh";
+import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import { useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 
+import { CircularProgress, IconButton } from "@mui/material";
 import type { ApiResponse, GPUMetrics } from "../types/api";
 import { mockGpuMetrics } from "../types/api.mock";
 import { getConfig } from "../utils/config";
 import { getComparator } from "../utils/sort";
+import { isUseIntence } from "../utils/usage";
 
 const config = getConfig();
 const API_BASE_URL = config.API_BASE_URL;
