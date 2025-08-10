@@ -7,12 +7,14 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 
 import { CircularProgress, IconButton } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import type { ApiResponse, GPUMetrics } from "../types/api";
 import { mockGpuMetrics } from "../types/api.mock";
 import { getConfig } from "../utils/config";
+import { searchContext } from "../utils/contexts";
 import { getComparator } from "../utils/sort";
 import { isHighUsage } from "../utils/usage";
 
@@ -57,8 +59,16 @@ const columns: {
   { id: "temperature", label: "temperature (°C)" },
 ];
 
+const ContentWrapper = styled("div")(({ theme }) => ({
+  marginTop: "65px",
+  [theme.breakpoints.up("sm")]: {
+    marginTop: "70px",
+  },
+}));
+
 const GPUTable = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { searchText } = useContext(searchContext);
   const [order, setOrder] = useState<Order>("asc");
   const [orderBy, setOrderBy] = useState<GpuRowKey>("node_name");
 
@@ -83,7 +93,9 @@ const GPUTable = () => {
 
   // ソート
   const sortedRows = useMemo(() => {
-    const arr = [...rows];
+    const arr = rows.filter(({ node_name }) => {
+      return node_name.indexOf(searchText) > -1;
+    });
     if (orderBy === "node_name") {
       // node_nameでソート時は、node_name→gpu_indexの複合ソート
       return arr.sort((a, b) => {
@@ -96,10 +108,10 @@ const GPUTable = () => {
     }
     // 他のカラムは通常のソート
     return arr.sort(getComparator<GPUMetrics>(order, orderBy));
-  }, [rows, order, orderBy]);
+  }, [rows, order, orderBy, searchText]);
 
   return (
-    <>
+    <ContentWrapper>
       <IconButton
         onClick={() => {
           setIsLoading(true);
@@ -186,7 +198,7 @@ const GPUTable = () => {
           </Table>
         </TableContainer>
       )}
-    </>
+    </ContentWrapper>
   );
 };
 export default GPUTable;
