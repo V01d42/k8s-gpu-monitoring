@@ -1,5 +1,7 @@
 import SearchIcon from '@mui/icons-material/Search';
 import { alpha, AppBar, Box, InputBase, styled, Toolbar, Typography } from "@mui/material";
+import { useContext } from 'react';
+import { searchContext } from '../utils/contexts';
 
 const SearchFieldWrapper = styled('div')(({ theme }) => ({
   position: 'relative',

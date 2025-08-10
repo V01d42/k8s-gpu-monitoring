@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { useRoutes } from "react-router-dom";
+import "./App.css";
 import TopMenu from "./components/TopMenu";
 import routes from "./Routes";
-import "./App.css";
+import { searchContext } from "./utils/contexts";
 
 function App() {
   const routing = useRoutes(routes);
