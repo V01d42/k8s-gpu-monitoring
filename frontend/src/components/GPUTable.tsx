@@ -56,13 +56,12 @@ const columns: {
   { id: "temperature", label: "temperature (°C)" },
 ];
 
-const ContentWrapper = styled('div')(({theme}) => ({
-  marginTop: '65px',
-    [theme.breakpoints.up('sm')]:
-    {
-      marginTop: '70px'
-    }
-}))
+const ContentWrapper = styled("div")(({ theme }) => ({
+  marginTop: "65px",
+  [theme.breakpoints.up("sm")]: {
+    marginTop: "70px",
+  },
+}));
 
 const GPUTable = () => {
   const { searchText } = useContext(searchContext);
@@ -84,7 +83,7 @@ const GPUTable = () => {
 
   // ソート
   const sortedRows = useMemo(() => {
-    const arr = rows.filter(({node_name}) => {
+    const arr = rows.filter(({ node_name }) => {
       return node_name.indexOf(searchText) > -1;
     });
     if (orderBy === "node_name") {
@@ -103,52 +102,24 @@ const GPUTable = () => {
 
   return (
     <ContentWrapper>
-    <TableContainer component={Paper}>
-      <Table
-        sx={{
-          width: "100%",
-          borderCollapse: "separate",
-          borderSpacing: 0,
-        }}
-        aria-label="gpu table"
-      >
-        <TableHead>
-          <TableRow>
-            {columns.map((col, colIdx) => (
-              <TableCell
-                key={col.id}
-                align="left"
-                sortDirection={orderBy === col.id ? order : false}
-                sx={{
-                  height: 12,
-                  padding: "8px 4px",
-                  borderRight:
-                    colIdx !== columns.length - 1
-                      ? "1px solid #e0e0e0"
-                      : undefined,
-                  borderLeft: colIdx === 0 ? "1px solid #e0e0e0" : undefined,
-                }}
-              >
-                <TableSortLabel
-                  active={orderBy === col.id}
-                  direction={orderBy === col.id ? order : "asc"}
-                  onClick={() => handleRequestSort(col.id)}
-                >
-                  {col.label}
-                </TableSortLabel>
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {sortedRows.map((row, idx) => (
-            <TableRow key={row.node_name + "-" + row.gpu_index + "-" + idx}>
+      <TableContainer component={Paper}>
+        <Table
+          sx={{
+            width: "100%",
+            borderCollapse: "separate",
+            borderSpacing: 0,
+          }}
+          aria-label="gpu table"
+        >
+          <TableHead>
+            <TableRow>
               {columns.map((col, colIdx) => (
                 <TableCell
                   key={col.id}
                   align="left"
+                  sortDirection={orderBy === col.id ? order : false}
                   sx={{
-                    height: 4,
+                    height: 12,
                     padding: "8px 4px",
                     borderRight:
                       colIdx !== columns.length - 1
@@ -157,14 +128,43 @@ const GPUTable = () => {
                     borderLeft: colIdx === 0 ? "1px solid #e0e0e0" : undefined,
                   }}
                 >
-                  {row[col.id]}
+                  <TableSortLabel
+                    active={orderBy === col.id}
+                    direction={orderBy === col.id ? order : "asc"}
+                    onClick={() => handleRequestSort(col.id)}
+                  >
+                    {col.label}
+                  </TableSortLabel>
                 </TableCell>
               ))}
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {sortedRows.map((row, idx) => (
+              <TableRow key={row.node_name + "-" + row.gpu_index + "-" + idx}>
+                {columns.map((col, colIdx) => (
+                  <TableCell
+                    key={col.id}
+                    align="left"
+                    sx={{
+                      height: 4,
+                      padding: "8px 4px",
+                      borderRight:
+                        colIdx !== columns.length - 1
+                          ? "1px solid #e0e0e0"
+                          : undefined,
+                      borderLeft:
+                        colIdx === 0 ? "1px solid #e0e0e0" : undefined,
+                    }}
+                  >
+                    {row[col.id]}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </ContentWrapper>
   );
 };
