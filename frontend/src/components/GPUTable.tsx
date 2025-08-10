@@ -144,6 +144,7 @@ const GPUTable = () => {
                         ? "1px solid #e0e0e0"
                         : undefined,
                     borderLeft: colIdx === 0 ? "1px solid #e0e0e0" : undefined,
+                        backgroundColor: isUseIntence(col.id, row[col.id]) ? 'red' : 'white',
                   }}
                 >
                   {row[col.id]}
