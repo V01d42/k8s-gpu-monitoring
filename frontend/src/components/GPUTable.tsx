@@ -1,17 +1,20 @@
+import RefreshIcon from "@mui/icons-material/Refresh";
+import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import { useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 
+import { CircularProgress, IconButton } from "@mui/material";
 import type { ApiResponse, GPUMetrics } from "../types/api";
 import { mockGpuMetrics } from "../types/api.mock";
 import { getConfig } from "../utils/config";
 import { getComparator } from "../utils/sort";
+import { isHighUsage } from "../utils/usage";
 
 const config = getConfig();
 const API_BASE_URL = config.API_BASE_URL;
@@ -55,6 +58,7 @@ const columns: {
 ];
 
 const GPUTable = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [order, setOrder] = useState<Order>("asc");
   const [orderBy, setOrderBy] = useState<GpuRowKey>("node_name");
 
@@ -65,10 +69,16 @@ const GPUTable = () => {
   };
 
   const [rows, setRows] = useState<GPUMetrics[]>([]);
-  useEffect(() => {
+
+  const fetchAndUpdate = () => {
     fetchGpuMetricsWithFallback().then((res) => {
+      setIsLoading(false);
       setRows(res.data ?? []);
     });
+  };
+
+  useEffect(() => {
+    fetchAndUpdate();
   }, []);
 
   // ソート
@@ -89,68 +99,94 @@ const GPUTable = () => {
   }, [rows, order, orderBy]);
 
   return (
-    <TableContainer component={Paper}>
-      <Table
-        sx={{
-          width: "100%",
-          borderCollapse: "separate",
-          borderSpacing: 0,
+    <>
+      <IconButton
+        onClick={() => {
+          setIsLoading(true);
+          fetchAndUpdate();
         }}
-        aria-label="gpu table"
+        disabled={isLoading}
+        sx={{
+          display: "flex",
+          height: "40px",
+          width: "40px",
+          alignItems: "center",
+          alignContent: "center",
+          margin: "0 0 0 auto",
+        }}
       >
-        <TableHead>
-          <TableRow>
-            {columns.map((col, colIdx) => (
-              <TableCell
-                key={col.id}
-                align="left"
-                sortDirection={orderBy === col.id ? order : false}
-                sx={{
-                  height: 12,
-                  padding: "8px 4px",
-                  borderRight:
-                    colIdx !== columns.length - 1
-                      ? "1px solid #e0e0e0"
-                      : undefined,
-                  borderLeft: colIdx === 0 ? "1px solid #e0e0e0" : undefined,
-                }}
-              >
-                <TableSortLabel
-                  active={orderBy === col.id}
-                  direction={orderBy === col.id ? order : "asc"}
-                  onClick={() => handleRequestSort(col.id)}
-                >
-                  {col.label}
-                </TableSortLabel>
-              </TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {sortedRows.map((row, idx) => (
-            <TableRow key={row.node_name + "-" + row.gpu_index + "-" + idx}>
-              {columns.map((col, colIdx) => (
-                <TableCell
-                  key={col.id}
-                  align="left"
-                  sx={{
-                    height: 4,
-                    padding: "8px 4px",
-                    borderRight:
-                      colIdx !== columns.length - 1
-                        ? "1px solid #e0e0e0"
-                        : undefined,
-                    borderLeft: colIdx === 0 ? "1px solid #e0e0e0" : undefined,
-                  }}
-                >
-                  {row[col.id]}
-                </TableCell>
+        {isLoading ? <CircularProgress size="20px" /> : <RefreshIcon />}
+      </IconButton>
+      {isLoading || (
+        <TableContainer component={Paper}>
+          <Table
+            sx={{
+              width: "100%",
+              borderCollapse: "separate",
+              borderSpacing: 0,
+            }}
+            aria-label="gpu table"
+          >
+            <TableHead>
+              <TableRow>
+                {columns.map((col, colIdx) => (
+                  <TableCell
+                    key={col.id}
+                    align="left"
+                    sortDirection={orderBy === col.id ? order : false}
+                    sx={{
+                      height: 12,
+                      padding: "8px 4px",
+                      borderRight:
+                        colIdx !== columns.length - 1
+                          ? "1px solid #e0e0e0"
+                          : undefined,
+                      borderLeft:
+                        colIdx === 0 ? "1px solid #e0e0e0" : undefined,
+                    }}
+                  >
+                    <TableSortLabel
+                      active={orderBy === col.id}
+                      direction={orderBy === col.id ? order : "asc"}
+                      onClick={() => handleRequestSort(col.id)}
+                    >
+                      {col.label}
+                    </TableSortLabel>
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {sortedRows.map((row, idx) => (
+                <TableRow key={row.node_name + "-" + row.gpu_index + "-" + idx}>
+                  {columns.map((col, colIdx) => (
+                    <TableCell
+                      key={col.id}
+                      align="left"
+                      sx={{
+                        height: 4,
+                        padding: "8px 4px",
+                        borderRight:
+                          colIdx !== columns.length - 1
+                            ? "1px solid #e0e0e0"
+                            : undefined,
+                        borderLeft:
+                          colIdx === 0 ? "1px solid #e0e0e0" : undefined,
+                        backgroundColor: isHighUsage(col.id, row[col.id])
+                          ? "#ef9a9a"
+                          : "white",
+                      }}
+                    >
+                      {row[col.id]}
+                    </TableCell>
+                  ))}
+                </TableRow>
               ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+    </>
   );
 };
 export default GPUTable;
