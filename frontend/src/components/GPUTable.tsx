@@ -58,6 +58,7 @@ const columns: {
 ];
 
 const GPUTable = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [order, setOrder] = useState<Order>("asc");
   const [orderBy, setOrderBy] = useState<GpuRowKey>("node_name");
 
@@ -70,6 +71,7 @@ const GPUTable = () => {
   const [rows, setRows] = useState<GPUMetrics[]>([]);
   useEffect(() => {
     fetchGpuMetricsWithFallback().then((res) => {
+      setIsLoading(false);
       setRows(res.data ?? []);
     });
   }, []);
@@ -92,6 +94,25 @@ const GPUTable = () => {
   }, [rows, order, orderBy]);
 
   return (
+    <>
+      <IconButton
+      onClick={()=>{
+        setIsLoading(true);
+      }}
+      disabled={isLoading} 
+      sx={{
+        display: "flex",
+        height: '40px',
+        width: '40px',
+        alignItems: 'center',
+        alignContent: 'center',
+        margin: '0 0 0 auto'
+        }}
+      >
+        {isLoading ? <CircularProgress size="20px" /> : <RefreshIcon />}
+      </IconButton>
+      {
+        isLoading || 
     <TableContainer component={Paper}>
       <Table
         sx={{
@@ -155,6 +176,8 @@ const GPUTable = () => {
         </TableBody>
       </Table>
     </TableContainer>
+      }
+    </>
   );
 };
 export default GPUTable;
