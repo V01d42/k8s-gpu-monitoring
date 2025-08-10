@@ -8,6 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import { useContext, useEffect, useMemo, useState } from "react";
 
+import { styled } from "@mui/material/styles";
 import type { ApiResponse, GPUMetrics } from "../types/api";
 import { mockGpuMetrics } from "../types/api.mock";
 import { getConfig } from "../utils/config";
@@ -55,6 +56,14 @@ const columns: {
   { id: "temperature", label: "temperature (°C)" },
 ];
 
+const ContentWrapper = styled('div')(({theme}) => ({
+  marginTop: '65px',
+    [theme.breakpoints.up('sm')]:
+    {
+      marginTop: '70px'
+    }
+}))
+
 const GPUTable = () => {
   const { searchText } = useContext(searchContext);
   const [order, setOrder] = useState<Order>("asc");
@@ -93,6 +102,7 @@ const GPUTable = () => {
   }, [rows, order, orderBy, searchText]);
 
   return (
+    <ContentWrapper>
     <TableContainer component={Paper}>
       <Table
         sx={{
@@ -155,6 +165,7 @@ const GPUTable = () => {
         </TableBody>
       </Table>
     </TableContainer>
+    </ContentWrapper>
   );
 };
 export default GPUTable;
