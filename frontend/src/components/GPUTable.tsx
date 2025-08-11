@@ -83,12 +83,13 @@ const GPUTable = () => {
 
   const fetchAndUpdate = () => {
     fetchGpuMetricsWithFallback().then((res) => {
-      if (!res.data){
-        setIsLoading(false);
-        return [];
+      let data = [];
+      if (res.data) {
+        data = JSON.parse(JSON.stringify(res.data));
+        convertGPUMetrics(data);
       }
-      convertGPUMetrics(res.data);
-      setRows(res.data);
+      setRows(data);
+      setIsLoading(false);
     });
   };
 
