@@ -14,8 +14,8 @@ import { styled } from "@mui/material/styles";
 import type { ApiResponse, GPUMetrics } from "../types/api";
 import { mockGpuMetrics } from "../types/api.mock";
 import { getConfig } from "../utils/config";
-import { convertGPUMetrics } from "../utils/convert";
 import { searchContext } from "../utils/contexts";
+import { convertGPUMetrics } from "../utils/convert";
 import { getComparator } from "../utils/sort";
 import { isHighUsage } from "../utils/usage";
 
