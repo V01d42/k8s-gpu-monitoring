@@ -1,6 +1,6 @@
 import type { GPUMetrics } from "../types/api";
 
-const convertGBtoMiB = (GB: number) => Math.floor(GB * (10 ** 9) / (2 ** 20));
+const convertGBtoMiB = (bytes: number) => Math.round(bytes / 2 ** 20);
 
 export const convertGPUMetrics = (ms: GPUMetrics[]) => {
   const convertKeys = ["memory_used", "memory_total", "memory_free"] as const;
