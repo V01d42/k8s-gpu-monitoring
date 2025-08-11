@@ -15,6 +15,7 @@ import type { ApiResponse, GPUMetrics } from "../types/api";
 import { mockGpuMetrics } from "../types/api.mock";
 import { getConfig } from "../utils/config";
 import { searchContext } from "../utils/contexts";
+import { convertGPUMetrics } from "../utils/convert";
 import { getComparator } from "../utils/sort";
 import { isHighUsage } from "../utils/usage";
 
@@ -82,8 +83,13 @@ const GPUTable = () => {
 
   const fetchAndUpdate = () => {
     fetchGpuMetricsWithFallback().then((res) => {
+      let data = [];
+      if (res.data) {
+        data = JSON.parse(JSON.stringify(res.data));
+        convertGPUMetrics(data);
+      }
+      setRows(data);
       setIsLoading(false);
-      setRows(res.data ?? []);
     });
   };
 
