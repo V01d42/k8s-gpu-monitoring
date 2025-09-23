@@ -1,19 +1,17 @@
 package models
 
-import "time"
-
 // GPUMetrics represents GPU metrics data structure
 type GPUMetrics struct {
-	NodeName          string    `json:"node_name"`
-	GPUIndex          int       `json:"gpu_index"`
-	GPUName           string    `json:"gpu_name"`
-	Utilization       float64   `json:"utilization"`
-	MemoryUsed        int       `json:"memory_used"`
-	MemoryTotal       int       `json:"memory_total"`
-	MemoryFree        int       `json:"memory_free"`
-	MemoryUtilization int       `json:"memory_utilization"`
-	Temperature       int       `json:"temperature"`
-	Timestamp         time.Time `json:"timestamp"`
+	NodeName          string  `json:"node_name"`
+	GPUIndex          int     `json:"gpu_index"`
+	GPUName           string  `json:"gpu_name"`
+	Utilization       float64 `json:"utilization"`
+	MemoryUsed        int     `json:"memory_used"`
+	MemoryTotal       int     `json:"memory_total"`
+	MemoryFree        int     `json:"memory_free"`
+	MemoryUtilization int     `json:"memory_utilization"`
+	Temperature       int     `json:"temperature"`
+	Timestamp         string  `json:"timestamp"`
 }
 
 // GPUNode represents GPU node information

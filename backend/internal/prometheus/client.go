@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"k8s-gpu-monitoring/internal/models"
+	"k8s-gpu-monitoring/internal/timeutil"
 )
 
 // Client represents a Prometheus HTTP API client.
@@ -145,7 +146,7 @@ func (c *Client) parseGPUMetrics(results map[string]*PrometheusResponse) ([]mode
 					NodeName:  nodeName,
 					GPUIndex:  idx,
 					GPUName:   gpuName,
-					Timestamp: time.Now(),
+					Timestamp: timeutil.NowJST(),
 				}
 			}
 

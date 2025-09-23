@@ -9,6 +9,7 @@ import (
 
 	"k8s-gpu-monitoring/internal/models"
 	"k8s-gpu-monitoring/internal/prometheus"
+	"k8s-gpu-monitoring/internal/timeutil"
 )
 
 // GPUHandler handles GPU-related HTTP requests with Prometheus backend.
@@ -142,7 +143,7 @@ func (h *GPUHandler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 		Message: "Service is healthy",
 		Data: map[string]interface{}{
 			"status":    "healthy",
-			"timestamp": time.Now().Format(time.RFC3339),
+			"timestamp": timeutil.NowJST(),
 			"version":   "1.0.0",
 		},
 	}
