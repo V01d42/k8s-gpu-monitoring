@@ -66,65 +66,6 @@ func (h *GPUHandler) GetGPUMetrics(w http.ResponseWriter, r *http.Request) {
 	h.writeJSONResponse(w, http.StatusOK, response)
 }
 
-// GetGPUNodes handles GET /api/v1/gpu/nodes - returns GPU-enabled nodes.
-func (h *GPUHandler) GetGPUNodes(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
-	defer cancel()
-
-	nodes, err := h.promClient.GetGPUNodes(ctx)
-	if err != nil {
-		log.Printf("Error getting GPU nodes: %v", err)
-		h.writeErrorResponse(w, http.StatusInternalServerError, "Failed to retrieve GPU nodes")
-		return
-	}
-
-	response := models.APIResponse{
-		Success: true,
-		Data:    nodes,
-		Message: "GPU nodes retrieved successfully",
-	}
-
-	h.writeJSONResponse(w, http.StatusOK, response)
-}
-
-// GetGPUUtilization handles GET /api/v1/gpu/utilization - returns simplified utilization data.
-func (h *GPUHandler) GetGPUUtilization(w http.ResponseWriter, r *http.Request) {
-	ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
-	defer cancel()
-
-	// Query for GPU utilization using kube-prometheus-stack metric names
-	query := `nvidia_gpu_utilization_percent`
-
-	resp, err := h.promClient.Query(ctx, query)
-	if err != nil {
-		log.Printf("Error getting GPU utilization: %v", err)
-		h.writeErrorResponse(w, http.StatusInternalServerError, "Failed to retrieve GPU utilization")
-		return
-	}
-
-	// Simplify response structure for lightweight API usage
-	var utilization []map[string]interface{}
-	for _, result := range resp.Data.Result {
-		if len(result.Value) >= 2 {
-			util := map[string]interface{}{
-				"node":        result.Metric["hostname"],
-				"gpu_index":   result.Metric["gpu_id"],
-				"utilization": result.Value[1],
-				"timestamp":   result.Value[0],
-			}
-			utilization = append(utilization, util)
-		}
-	}
-
-	response := models.APIResponse{
-		Success: true,
-		Data:    utilization,
-		Message: "GPU utilization retrieved successfully",
-	}
-
-	h.writeJSONResponse(w, http.StatusOK, response)
-}
-
 // HealthCheck handles GET /api/healthz - verifies service and Prometheus connectivity.
 func (h *GPUHandler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 	// Verify Prometheus server connectivity

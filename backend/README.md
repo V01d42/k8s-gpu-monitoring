@@ -64,18 +64,6 @@ GET /api/v1/gpu/metrics
 }
 ```
 
-### GPU搭載ノード一覧
-```
-GET /api/v1/gpu/nodes
-```
-GPU搭載ノードの情報を取得
-
-### GPU利用率
-```
-GET /api/v1/gpu/utilization
-```
-GPUの利用率のみを取得（軽量エンドポイント）
-
 ## プロジェクト構造
 
 ```
@@ -280,7 +268,6 @@ nvidia_gpu_temperature_celsius
 # 典型的なパフォーマンス（開発環境）
 GET /api/v1/gpu/metrics: ~200ms (6個のGPU、並行クエリ)
 GET /api/healthz: ~50ms
-GET /api/v1/gpu/utilization: ~100ms (軽量クエリ)
 ```
 
 ## セキュリティ

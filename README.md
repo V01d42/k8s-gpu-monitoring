@@ -252,8 +252,6 @@ helm test gpu-monitoring --namespace gpu-monitoring
 |--------|------|------|-----------|
 | GET | `/api/healthz` | ヘルスチェック・Prometheus接続確認 | `APIResponse` |
 | GET | `/api/v1/gpu/metrics` | 全GPUの詳細メトリクス | `APIResponse<GPUMetrics[]>` |
-| GET | `/api/v1/gpu/nodes` | GPU搭載ノード一覧 | `APIResponse<GPUNode[]>` |
-| GET | `/api/v1/gpu/utilization` | GPU利用率のみ（軽量） | `APIResponse<GPUUtilization[]>` |
 
 ## 監視・運用
 

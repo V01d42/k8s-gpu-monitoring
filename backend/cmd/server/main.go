@@ -36,8 +36,6 @@ func main() {
 	// Register API routes
 	mux.HandleFunc("GET /api/healthz", gpuHandler.HealthCheck)
 	mux.HandleFunc("GET /api/v1/gpu/metrics", gpuHandler.GetGPUMetrics)
-	mux.HandleFunc("GET /api/v1/gpu/nodes", gpuHandler.GetGPUNodes)
-	mux.HandleFunc("GET /api/v1/gpu/utilization", gpuHandler.GetGPUUtilization)
 
 	// Serve static files for frontend
 	mux.Handle("GET /", http.FileServer(http.Dir("./static/")))

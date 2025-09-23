@@ -16,7 +16,6 @@ import (
 // PrometheusClient interface for testing
 type PrometheusClient interface {
 	GetGPUMetrics(ctx context.Context) ([]models.GPUMetrics, error)
-	GetGPUNodes(ctx context.Context) ([]models.GPUNode, error)
 	Query(ctx context.Context, query string) (*prometheus.PrometheusResponse, error)
 }
 
@@ -40,20 +39,6 @@ func (m *mockPrometheusClient) GetGPUMetrics(ctx context.Context) ([]models.GPUM
 			MemoryFree:        8.0,
 			MemoryUtilization: 50.0,
 			Temperature:       65.0,
-		},
-	}, nil
-}
-
-func (m *mockPrometheusClient) GetGPUNodes(ctx context.Context) ([]models.GPUNode, error) {
-	if m.shouldReturnError {
-		return nil, errors.New("mock prometheus error")
-	}
-
-	return []models.GPUNode{
-		{
-			NodeName:  "node1",
-			GPUCount:  2,
-			GPUModels: []string{"NVIDIA Tesla V100"},
 		},
 	}, nil
 }

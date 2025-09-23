@@ -14,13 +14,6 @@ type GPUMetrics struct {
 	Timestamp         string  `json:"timestamp"`
 }
 
-// GPUNode represents GPU node information
-type GPUNode struct {
-	NodeName  string   `json:"node_name"`
-	GPUCount  int      `json:"gpu_count"`
-	GPUModels []string `json:"gpu_models"`
-}
-
 // APIResponse represents standard API response structure
 type APIResponse struct {
 	Success bool        `json:"success"`
