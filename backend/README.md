@@ -53,7 +53,7 @@ GET /api/v1/gpu/metrics
       "memory_used": 8.0,
       "memory_total": 16.0,
       "memory_free": 8.0,
-      "memory_utilization": 50.0,
+      "memory_utilization": 50.5,
       "temperature": 65.0,
       "timestamp": "2024-01-01T12:00:00Z"
     }
@@ -81,8 +81,8 @@ GPU上で稼働中のプロセス情報を取得（Prometheusのプロセスメ�
       "user": "alice",
       "command": "python train.py",
       "gpu_memory": 1024,
-      "cpu": 8,
-      "memory": 15,
+      "cpu": 8.5,
+      "memory": 15.2,
       "timestamp": "2024-01-01T12:00:00Z"
     }
   ],

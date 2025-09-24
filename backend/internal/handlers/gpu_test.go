@@ -39,7 +39,7 @@ func (m *mockPrometheusClient) GetGPUMetrics(ctx context.Context) ([]models.GPUM
 			MemoryUsed:        8.0,
 			MemoryTotal:       16.0,
 			MemoryFree:        8.0,
-			MemoryUtilization: 50.0,
+			MemoryUtilization: 50.5,
 			Temperature:       65.0,
 		},
 	}, nil
@@ -59,8 +59,8 @@ func (m *mockPrometheusClient) GetGPUProcesses(ctx context.Context) ([]models.GP
 			User:        "user1",
 			Command:     "python train.py",
 			GPUMemory:   1024,
-			CPU:         10,
-			Memory:      20,
+			CPU:         10.5,
+			Memory:      20.25,
 			Timestamp:   "2024/01/01 12:00:00",
 		},
 	}, nil

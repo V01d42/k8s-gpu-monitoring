@@ -213,7 +213,7 @@ func (c *Client) parseGPUMetrics(results map[string]*PrometheusResponse) ([]mode
 				case "memory_free":
 					metricsMap[key].MemoryFree = int(value)
 				case "memory_utilization":
-					metricsMap[key].MemoryUtilization = int(value)
+					metricsMap[key].MemoryUtilization = value
 				case "temperature":
 					metricsMap[key].Temperature = int(value)
 				}
@@ -283,9 +283,9 @@ func (c *Client) parseGPUProcesses(results map[string]*PrometheusResponse) ([]mo
 			case "gpu_memory":
 				processMap[key].GPUMemory = int(value)
 			case "cpu_usage":
-				processMap[key].CPU = int(value)
+				processMap[key].CPU = value
 			case "mem_usage":
-				processMap[key].Memory = int(value)
+				processMap[key].Memory = value
 			}
 		}
 	}

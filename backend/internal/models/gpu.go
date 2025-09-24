@@ -9,7 +9,7 @@ type GPUMetrics struct {
 	MemoryUsed        int     `json:"memory_used"`
 	MemoryTotal       int     `json:"memory_total"`
 	MemoryFree        int     `json:"memory_free"`
-	MemoryUtilization int     `json:"memory_utilization"`
+	MemoryUtilization float64 `json:"memory_utilization"`
 	Temperature       int     `json:"temperature"`
 	Timestamp         string  `json:"timestamp"`
 }
@@ -23,8 +23,8 @@ type GPUProcess struct {
 	User        string  `json:"user"`
 	Command     string  `json:"command"`
 	GPUMemory   int     `json:"gpu_memory"`
-	CPU         int     `json:"cpu"`
-	Memory      int     `json:"memory"`
+	CPU         float64 `json:"cpu"`
+	Memory      float64 `json:"memory"`
 	Timestamp   string  `json:"timestamp"`
 }
 
