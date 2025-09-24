@@ -16,11 +16,13 @@ import (
 // PrometheusClient interface for testing
 type PrometheusClient interface {
 	GetGPUMetrics(ctx context.Context) ([]models.GPUMetrics, error)
+	GetGPUProcesses(ctx context.Context) ([]models.GPUProcess, error)
 	Query(ctx context.Context, query string) (*prometheus.PrometheusResponse, error)
 }
 
 type mockPrometheusClient struct {
-	shouldReturnError bool
+	shouldReturnError  bool
+	shouldProcessError bool
 }
 
 func (m *mockPrometheusClient) GetGPUMetrics(ctx context.Context) ([]models.GPUMetrics, error) {
@@ -39,6 +41,27 @@ func (m *mockPrometheusClient) GetGPUMetrics(ctx context.Context) ([]models.GPUM
 			MemoryFree:        8.0,
 			MemoryUtilization: 50.0,
 			Temperature:       65.0,
+		},
+	}, nil
+}
+
+func (m *mockPrometheusClient) GetGPUProcesses(ctx context.Context) ([]models.GPUProcess, error) {
+	if m.shouldProcessError {
+		return nil, errors.New("mock prometheus process error")
+	}
+
+	return []models.GPUProcess{
+		{
+			NodeName:    "node1",
+			GPUIndex:    0,
+			PID:         1234,
+			ProcessName: "python",
+			User:        "user1",
+			Command:     "python train.py",
+			GPUMemory:   1024,
+			CPU:         10,
+			Memory:      20,
+			Timestamp:   "2024/01/01 12:00:00",
 		},
 	}, nil
 }
@@ -133,6 +156,28 @@ func (h *GPUHandlerWrapper) GetGPUMetrics(w http.ResponseWriter, r *http.Request
 		Success: true,
 		Data:    metrics,
 		Message: "GPU metrics retrieved successfully",
+	}
+	h.writeJSONResponse(w, http.StatusOK, response)
+}
+
+func (h *GPUHandlerWrapper) GetGPUProcesses(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
+	defer cancel()
+
+	processes, err := h.promClient.GetGPUProcesses(ctx)
+	if err != nil {
+		response := models.APIResponse{
+			Success: false,
+			Error:   "Failed to retrieve GPU processes",
+		}
+		h.writeJSONResponse(w, http.StatusInternalServerError, response)
+		return
+	}
+
+	response := models.APIResponse{
+		Success: true,
+		Data:    processes,
+		Message: "GPU processes retrieved successfully",
 	}
 	h.writeJSONResponse(w, http.StatusOK, response)
 }
@@ -232,6 +277,63 @@ func TestGetGPUMetrics(t *testing.T) {
 				}
 				if response.Data == nil {
 					t.Error("expected data to be present")
+				}
+			}
+		})
+	}
+}
+
+func TestGetGPUProcesses(t *testing.T) {
+	tests := []struct {
+		name             string
+		mockProcessError bool
+		expectedCode     int
+		checkData        bool
+	}{
+		{
+			name:             "successful processes retrieval",
+			mockProcessError: false,
+			expectedCode:     http.StatusOK,
+			checkData:        true,
+		},
+		{
+			name:             "prometheus process error",
+			mockProcessError: true,
+			expectedCode:     http.StatusInternalServerError,
+			checkData:        false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockClient := &mockPrometheusClient{shouldProcessError: tt.mockProcessError}
+			handler := NewGPUHandlerWrapper(mockClient)
+
+			req := httptest.NewRequest("GET", "/api/v1/gpu/processes", nil)
+			w := httptest.NewRecorder()
+
+			handler.GetGPUProcesses(w, req)
+
+			if w.Code != tt.expectedCode {
+				t.Errorf("expected status %d, got %d", tt.expectedCode, w.Code)
+			}
+
+			var response models.APIResponse
+			err := json.NewDecoder(w.Body).Decode(&response)
+			if err != nil {
+				t.Fatalf("failed to decode response: %v", err)
+			}
+
+			if tt.checkData {
+				if !response.Success {
+					t.Error("expected success to be true")
+				}
+				if response.Data == nil {
+					t.Error("expected data to be present")
+				}
+			} else {
+				if response.Success {
+					t.Error("expected success to be false")
 				}
 			}
 		})

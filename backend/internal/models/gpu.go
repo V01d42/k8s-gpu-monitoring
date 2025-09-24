@@ -14,6 +14,20 @@ type GPUMetrics struct {
 	Timestamp         string  `json:"timestamp"`
 }
 
+// GPUProcess represents running GPU-related processes and their usage metrics.
+type GPUProcess struct {
+	NodeName    string  `json:"node_name"`
+	GPUIndex    int     `json:"gpu_index"`
+	PID         int     `json:"pid"`
+	ProcessName string  `json:"process_name"`
+	User        string  `json:"user"`
+	Command     string  `json:"command"`
+	GPUMemory   int     `json:"gpu_memory"`
+	CPU         int     `json:"cpu"`
+	Memory      int     `json:"memory"`
+	Timestamp   string  `json:"timestamp"`
+}
+
 // APIResponse represents standard API response structure
 type APIResponse struct {
 	Success bool        `json:"success"`
