@@ -30,12 +30,13 @@ func main() {
 	// Initialize handlers
 	gpuHandler := handlers.NewGPUHandler(promClient)
 
-	// Use Go 1.22's new ServeMux with method-specific routing
+	// Setup HTTP server and routes
 	mux := http.NewServeMux()
 
 	// Register API routes
 	mux.HandleFunc("GET /api/healthz", gpuHandler.HealthCheck)
 	mux.HandleFunc("GET /api/v1/gpu/metrics", gpuHandler.GetGPUMetrics)
+	mux.HandleFunc("GET /api/v1/gpu/processes", gpuHandler.GetGPUProcesses)
 
 	// Serve static files for frontend
 	mux.Handle("GET /", http.FileServer(http.Dir("./static/")))

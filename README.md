@@ -54,6 +54,9 @@ curl http://gpu-monitoring.local/api/v1/gpu/utilization
 
 # GPUノード一覧
 curl http://gpu-monitoring.local/api/v1/gpu/nodes
+
+# GPUプロセス一覧
+curl http://gpu-monitoring.local/api/v1/gpu/processes
 ```
 
 ## プロジェクト構成
@@ -148,6 +151,11 @@ nvidia_gpu_memory_utilization_percent
 
 # 温度
 nvidia_gpu_temperature_celsius
+
+# プロセス関連
+nvidia_gpu_process_gpu_memory_bytes
+nvidia_gpu_process_cpu_percent
+nvidia_gpu_process_memory_percent
 ```
 
 ## カスタマイズ

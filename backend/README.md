@@ -53,14 +53,40 @@ GET /api/v1/gpu/metrics
       "memory_used": 8.0,
       "memory_total": 16.0,
       "memory_free": 8.0,
-      "memory_utilization": 50.0,
+      "memory_utilization": 50.5,
       "temperature": 65.0,
-      "power_draw": 250.0,
-      "power_limit": 300.0,
       "timestamp": "2024-01-01T12:00:00Z"
     }
   ],
   "message": "GPU metrics retrieved successfully"
+}
+```
+
+### GPUプロセス取得
+```
+GET /api/v1/gpu/processes
+```
+GPU上で稼働中のプロセス情報を取得（Prometheusのプロセスメトリクスを並行クエリ）
+
+**レスポンス例:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "node_name": "gpu-node-1",
+      "gpu_index": 0,
+      "pid": 1234,
+      "process_name": "python",
+      "user": "alice",
+      "command": "python train.py",
+      "gpu_memory": 1024,
+      "cpu": 8.5,
+      "memory": 15.2,
+      "timestamp": "2024-01-01T12:00:00Z"
+    }
+  ],
+  "message": "GPU processes retrieved successfully"
 }
 ```
 
@@ -209,6 +235,11 @@ nvidia_gpu_memory_utilization_percent
 
 # 温度（摂氏）
 nvidia_gpu_temperature_celsius
+
+# プロセス関連
+nvidia_gpu_process_gpu_memory_bytes
+nvidia_gpu_process_cpu_percent
+nvidia_gpu_process_memory_percent
 ```
 
 各メトリクスには以下のラベルが必要：

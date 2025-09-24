@@ -66,6 +66,27 @@ func (h *GPUHandler) GetGPUMetrics(w http.ResponseWriter, r *http.Request) {
 	h.writeJSONResponse(w, http.StatusOK, response)
 }
 
+// GetGPUProcesses handles GET /api/v1/gpu/processes - returns running GPU processes.
+func (h *GPUHandler) GetGPUProcesses(w http.ResponseWriter, r *http.Request) {
+	ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
+	defer cancel()
+
+	processes, err := h.promClient.GetGPUProcesses(ctx)
+	if err != nil {
+		log.Printf("Error getting GPU processes: %v", err)
+		h.writeErrorResponse(w, http.StatusInternalServerError, "Failed to retrieve GPU processes")
+		return
+	}
+
+	response := models.APIResponse{
+		Success: true,
+		Data:    processes,
+		Message: "GPU processes retrieved successfully",
+	}
+
+	h.writeJSONResponse(w, http.StatusOK, response)
+}
+
 // HealthCheck handles GET /api/healthz - verifies service and Prometheus connectivity.
 func (h *GPUHandler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 	// Verify Prometheus server connectivity
