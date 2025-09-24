@@ -166,7 +166,7 @@ func (c *Client) GetGPUProcesses(ctx context.Context) ([]models.GPUProcess, erro
 // parseGPUMetrics parses Prometheus response into GPUMetrics.
 func (c *Client) parseGPUMetrics(results map[string]*PrometheusResponse) ([]models.GPUMetrics, error) {
 	// Group metrics by node and GPU index
-	metricsMap := make(map[string]*models.GPUMetrics) // key: "node_name:gpu_index"
+	metricsMap := make(map[string]models.GPUMetrics) // key: "node_name:gpu_index"
 
 	for metricType, response := range results {
 		for _, result := range response.Data.Result {
@@ -180,9 +180,10 @@ func (c *Client) parseGPUMetrics(results map[string]*PrometheusResponse) ([]mode
 
 			key := fmt.Sprintf("%s:%s", nodeName, gpuIndex)
 
-			if metricsMap[key] == nil {
+			metricsEntry, exists := metricsMap[key]
+			if !exists {
 				idx, _ := strconv.Atoi(gpuIndex)
-				metricsMap[key] = &models.GPUMetrics{
+				metricsEntry = models.GPUMetrics{
 					NodeName:  nodeName,
 					GPUIndex:  idx,
 					GPUName:   gpuName,
@@ -205,26 +206,28 @@ func (c *Client) parseGPUMetrics(results map[string]*PrometheusResponse) ([]mode
 				// Set value based on metric type
 				switch metricType {
 				case "utilization":
-					metricsMap[key].Utilization = value
+					metricsEntry.Utilization = value
 				case "memory_used":
-					metricsMap[key].MemoryUsed = int(value)
+					metricsEntry.MemoryUsed = int(value)
 				case "memory_total":
-					metricsMap[key].MemoryTotal = int(value)
+					metricsEntry.MemoryTotal = int(value)
 				case "memory_free":
-					metricsMap[key].MemoryFree = int(value)
+					metricsEntry.MemoryFree = int(value)
 				case "memory_utilization":
-					metricsMap[key].MemoryUtilization = value
+					metricsEntry.MemoryUtilization = value
 				case "temperature":
-					metricsMap[key].Temperature = int(value)
+					metricsEntry.Temperature = int(value)
 				}
 			}
+
+			metricsMap[key] = metricsEntry
 		}
 	}
 
 	// Convert to slice
 	var gpuMetrics []models.GPUMetrics
 	for _, metrics := range metricsMap {
-		gpuMetrics = append(gpuMetrics, *metrics)
+		gpuMetrics = append(gpuMetrics, metrics)
 	}
 
 	return gpuMetrics, nil
@@ -232,7 +235,7 @@ func (c *Client) parseGPUMetrics(results map[string]*PrometheusResponse) ([]mode
 
 // parseGPUProcesses parses Prometheus response into GPUProcess slice.
 func (c *Client) parseGPUProcesses(results map[string]*PrometheusResponse) ([]models.GPUProcess, error) {
-	processMap := make(map[string]*models.GPUProcess)
+	processMap := make(map[string]models.GPUProcess)
 
 	for metricType, response := range results {
 		if response == nil {
@@ -250,11 +253,12 @@ func (c *Client) parseGPUProcesses(results map[string]*PrometheusResponse) ([]mo
 
 			key := fmt.Sprintf("%s:%s:%s", nodeName, gpuIndex, pidStr)
 
-			if processMap[key] == nil {
+			proc, exists := processMap[key]
+			if !exists {
 				idx, _ := strconv.Atoi(gpuIndex)
 				pid, _ := strconv.Atoi(pidStr)
 
-				processMap[key] = &models.GPUProcess{
+				proc = models.GPUProcess{
 					NodeName:    nodeName,
 					GPUIndex:    idx,
 					PID:         pid,
@@ -281,12 +285,14 @@ func (c *Client) parseGPUProcesses(results map[string]*PrometheusResponse) ([]mo
 
 			switch metricType {
 			case "gpu_memory":
-				processMap[key].GPUMemory = int(value)
+				proc.GPUMemory = int(value)
 			case "cpu_usage":
-				processMap[key].CPU = value
+				proc.CPU = value
 			case "mem_usage":
-				processMap[key].Memory = value
+				proc.Memory = value
 			}
+
+			processMap[key] = proc
 		}
 	}
 
@@ -296,7 +302,7 @@ func (c *Client) parseGPUProcesses(results map[string]*PrometheusResponse) ([]mo
 
 	processes := make([]models.GPUProcess, 0, len(processMap))
 	for _, proc := range processMap {
-		processes = append(processes, *proc)
+		processes = append(processes, proc)
 	}
 
 	sort.Slice(processes, func(i, j int) bool {
