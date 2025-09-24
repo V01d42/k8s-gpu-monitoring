@@ -30,7 +30,7 @@ func main() {
 	// Initialize handlers
 	gpuHandler := handlers.NewGPUHandler(promClient)
 
-	// Use Go 1.22's new ServeMux with method-specific routing
+	// Setup HTTP server and routes
 	mux := http.NewServeMux()
 
 	// Register API routes

@@ -55,8 +55,6 @@ GET /api/v1/gpu/metrics
       "memory_free": 8.0,
       "memory_utilization": 50.0,
       "temperature": 65.0,
-      "power_draw": 250.0,
-      "power_limit": 300.0,
       "timestamp": "2024-01-01T12:00:00Z"
     }
   ],
