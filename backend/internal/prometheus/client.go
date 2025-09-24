@@ -10,6 +10,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"k8s-gpu-monitoring/internal/models"
@@ -100,6 +101,7 @@ func (c *Client) GetGPUMetrics(ctx context.Context) ([]models.GPUMetrics, error)
 
 	results := make(map[string]*PrometheusResponse)
 	errors := make(chan error, len(queries))
+	var mu sync.Mutex
 
 	// Execute queries concurrently
 	for name, query := range queries {
@@ -109,7 +111,9 @@ func (c *Client) GetGPUMetrics(ctx context.Context) ([]models.GPUMetrics, error)
 				errors <- fmt.Errorf("query %s failed: %w", name, err)
 				return
 			}
+			mu.Lock()
 			results[name] = resp
+			mu.Unlock()
 			errors <- nil
 		}(name, query)
 	}
@@ -132,14 +136,28 @@ func (c *Client) GetGPUProcesses(ctx context.Context) ([]models.GPUProcess, erro
 		"mem_usage":  `nvidia_gpu_process_memory_percent`,
 	}
 
-	results := make(map[string]*PrometheusResponse, len(queries))
+	results := make(map[string]*PrometheusResponse)
+	errors := make(chan error, len(queries))
+	var mu sync.Mutex
 
 	for name, query := range queries {
-		resp, err := c.Query(ctx, query)
-		if err != nil {
-			return nil, fmt.Errorf("query %s failed: %w", name, err)
+		go func(name, query string) {
+			resp, err := c.Query(ctx, query)
+			if err != nil {
+				errors <- fmt.Errorf("query %s failed: %w", name, err)
+				return
+			}
+			mu.Lock()
+			results[name] = resp
+			mu.Unlock()
+			errors <- nil
+		}(name, query)
+	}
+
+	for i := 0; i < len(queries); i++ {
+		if err := <-errors; err != nil {
+			return nil, err
 		}
-		results[name] = resp
 	}
 
 	return c.parseGPUProcesses(results)
