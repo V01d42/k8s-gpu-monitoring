@@ -1,5 +1,5 @@
 // Mock API responses for backend endpoints
-import type { ApiResponse, GPUMetrics, GPUNode, GPUUtilization } from "./api";
+import type { ApiResponse, GPUMetrics } from "./api";
 
 export const mockGpuMetrics: ApiResponse<GPUMetrics[]> = {
   success: true,
@@ -197,81 +197,6 @@ export const mockGpuMetrics: ApiResponse<GPUMetrics[]> = {
       temperature: 45.3,
       timestamp: "2025-07-26T12:00:00Z",
     },
-  ],
-};
-
-export const mockGpuNodes: ApiResponse<GPUNode[]> = {
-  success: true,
-  message: "GPU nodes retrieved successfully",
-  data: [
-    {
-      node_name: "gpu14",
-      gpu_count: 2,
-      gpu_models: ["NVIDIA A100"],
-    },
-    {
-      node_name: "gpu15",
-      gpu_count: 2,
-      gpu_models: ["NVIDIA V100"],
-    },
-    {
-      node_name: "gpu16",
-      gpu_count: 2,
-      gpu_models: ["NVIDIA A100"],
-    },
-    {
-      node_name: "gpu17",
-      gpu_count: 2,
-      gpu_models: ["NVIDIA RTX 4090"],
-    },
-    {
-      node_name: "gpu18",
-      gpu_count: 2,
-      gpu_models: ["NVIDIA H100"],
-    },
-    {
-      node_name: "gpu19",
-      gpu_count: 2,
-      gpu_models: ["NVIDIA V100"],
-    },
-    {
-      node_name: "gpu20",
-      gpu_count: 2,
-      gpu_models: ["NVIDIA A40"],
-    },
-    {
-      node_name: "gpu21",
-      gpu_count: 1,
-      gpu_models: ["NVIDIA RTX 3090"],
-    },
-    {
-      node_name: "gpu22",
-      gpu_count: 1,
-      gpu_models: ["NVIDIA A100"],
-    },
-  ],
-};
-
-export const mockGpuUtilization: ApiResponse<GPUUtilization[]> = {
-  success: true,
-  message: "GPU utilization retrieved successfully",
-  data: [
-    { node: "gpu14", gpu_index: 0, utilization: 85.2, timestamp: 1721995200 },
-    { node: "gpu14", gpu_index: 1, utilization: 90.0, timestamp: 1721995200 },
-    { node: "gpu15", gpu_index: 0, utilization: 55.5, timestamp: 1721995200 },
-    { node: "gpu15", gpu_index: 1, utilization: 60.1, timestamp: 1721995200 },
-    { node: "gpu16", gpu_index: 0, utilization: 78.3, timestamp: 1721995200 },
-    { node: "gpu16", gpu_index: 1, utilization: 92.7, timestamp: 1721995200 },
-    { node: "gpu17", gpu_index: 0, utilization: 95.4, timestamp: 1721995200 },
-    { node: "gpu17", gpu_index: 1, utilization: 67.8, timestamp: 1721995200 },
-    { node: "gpu18", gpu_index: 0, utilization: 88.9, timestamp: 1721995200 },
-    { node: "gpu18", gpu_index: 1, utilization: 42.3, timestamp: 1721995200 },
-    { node: "gpu19", gpu_index: 0, utilization: 73.5, timestamp: 1721995200 },
-    { node: "gpu19", gpu_index: 1, utilization: 29.8, timestamp: 1721995200 },
-    { node: "gpu20", gpu_index: 0, utilization: 82.1, timestamp: 1721995200 },
-    { node: "gpu20", gpu_index: 1, utilization: 14.7, timestamp: 1721995200 },
-    { node: "gpu21", gpu_index: 0, utilization: 99.1, timestamp: 1721995200 },
-    { node: "gpu22", gpu_index: 0, utilization: 12.5, timestamp: 1721995200 },
   ],
 };
 
