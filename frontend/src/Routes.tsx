@@ -1,10 +1,10 @@
 import type { RouteObject } from "react-router-dom";
-import GPUTable from "./components/GPUTable";
+import GPUMonitoringPage from "./pages/GPUMonitoringPage";
 
 const routes: RouteObject[] = [
   {
     children: [
-      { path: "/", element: <GPUTable /> },
+      { path: "/", element: <GPUMonitoringPage /> },
       { path: "/healthz", element: <div>OK</div> },
     ],
   },
