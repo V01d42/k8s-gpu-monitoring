@@ -19,3 +19,16 @@ export interface GPUMetrics {
   temperature: number;
   timestamp: string; // ISO8601
 }
+
+export interface GPUProcess {
+  node_name: string;
+  gpu_index: number;
+  pid: number;
+  process_name: string;
+  user: string;
+  command: string;
+  gpu_memory: number;
+  cpu: number;
+  memory: number;
+  timestamp: string;
+}

@@ -1,5 +1,5 @@
 // Mock API responses for backend endpoints
-import type { ApiResponse, GPUMetrics } from "./api";
+import type { ApiResponse, GPUMetrics, GPUProcess } from "./api";
 
 export const mockGpuMetrics: ApiResponse<GPUMetrics[]> = {
   success: true,
@@ -196,6 +196,49 @@ export const mockGpuMetrics: ApiResponse<GPUMetrics[]> = {
       memory_utilization: 12.5,
       temperature: 45.3,
       timestamp: "2025-07-26T12:00:00Z",
+    },
+  ],
+};
+
+export const mockGPUProcesses: ApiResponse<GPUProcess[]> = {
+  success: true,
+  message: "GPU processes retrieved successfully",
+  data: [
+    {
+      node_name: "gpu14",
+      gpu_index: 0,
+      pid: 1234,
+      process_name: "python",
+      user: "alice",
+      command: "python train.py",
+      gpu_memory: 1024,
+      cpu: 8.5,
+      memory: 85.2,
+      timestamp: "2024-01-01T12:00:00Z",
+    },
+    {
+      node_name: "gpu14",
+      gpu_index: 1,
+      pid: 5678,
+      process_name: "jupyter",
+      user: "bob",
+      command: "jupyter notebook",
+      gpu_memory: 512,
+      cpu: 3.2,
+      memory: 4.8,
+      timestamp: "2024-01-01T12:00:00Z",
+    },
+    {
+      node_name: "gpu15",
+      gpu_index: 0,
+      pid: 4321,
+      process_name: "cuda_app",
+      user: "carol",
+      command: "./cuda_app",
+      gpu_memory: 2048,
+      cpu: 12.1,
+      memory: 22.0,
+      timestamp: "2024-01-01T12:00:00Z",
     },
   ],
 };
