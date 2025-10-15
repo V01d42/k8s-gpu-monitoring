@@ -2,10 +2,12 @@ import GPUProcessesTable from "../components/GPUProcessesTable";
 import GPUUsageTable from "../components/GPUUsageTable";
 
 const GPUMonitoringPage = () => {
+  const components = [GPUUsageTable, GPUProcessesTable];
   return (
     <>
-      <GPUUsageTable />
-      <GPUProcessesTable />
+      {components.map((Comp) => (
+        <Comp />
+      ))}
     </>
   );
 };
