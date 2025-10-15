@@ -75,6 +75,7 @@ const GPUProcessesTable = () => {
       let data = [];
       if (res.data) {
         data = JSON.parse(JSON.stringify(res.data));
+        convertGPUProcesses(data);
       }
       setRows(data);
       setIsLoading(false);
