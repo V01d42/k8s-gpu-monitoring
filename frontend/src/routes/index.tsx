@@ -1,5 +1,5 @@
 import type { RouteObject } from "react-router-dom";
-import GPUMonitoringPage from "./pages/GPUMonitoringPage";
+import GPUMonitoringPage from "../pages/GPUMonitoringPage";
 
 const routes: RouteObject[] = [
   {
