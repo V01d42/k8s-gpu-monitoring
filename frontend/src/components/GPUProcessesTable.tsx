@@ -185,6 +185,7 @@ const GPUProcessesTable = () => {
                             : undefined,
                         borderLeft:
                           colIdx === 0 ? "1px solid #e0e0e0" : undefined,
+                        backgroundColor: isHighUsage(col.id, row[col.id])
                           ? "#ef9a9a"
                           : "white",
                       }}

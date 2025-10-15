@@ -1,4 +1,9 @@
-const columnsWithPercent = ["utilization", "memory_utilization"];
+const columnsWithPercent = [
+  "utilization",
+  "memory_utilization",
+  "cpu",
+  "memory",
+];
 const columnsWithTmp = ["temperature"];
 
 export const isHighUsage = (id: string, value: string | number) => {
