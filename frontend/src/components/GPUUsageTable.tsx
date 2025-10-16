@@ -1,4 +1,3 @@
-import RefreshIcon from "@mui/icons-material/Refresh";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -9,7 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import { useContext, useEffect, useMemo, useState } from "react";
 
-import { CircularProgress, IconButton } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type { ApiResponse, GPUMetrics } from "../types/api";
 import { mockGpuMetrics } from "../types/api.mock";
@@ -67,7 +66,7 @@ const ContentWrapper = styled("div")(({ theme }) => ({
   },
 }));
 
-const GPUTable = () => {
+const GPUUsageTable = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { searchText } = useContext(searchContext);
   const [order, setOrder] = useState<Order>("asc");
@@ -118,24 +117,21 @@ const GPUTable = () => {
 
   return (
     <ContentWrapper>
-      <IconButton
-        onClick={() => {
-          setIsLoading(true);
-          fetchAndUpdate();
-        }}
-        disabled={isLoading}
-        sx={{
-          display: "flex",
-          height: "40px",
-          width: "40px",
-          alignItems: "center",
-          alignContent: "center",
-          margin: "0 0 0 auto",
-        }}
-      >
-        {isLoading ? <CircularProgress size="20px" /> : <RefreshIcon />}
-      </IconButton>
-      {isLoading || (
+      <Typography variant="h4" sx={{ paddingTop: 2, marginBottom: 2 }}>
+        GPU Usage
+      </Typography>
+      {isLoading ? (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: 200,
+          }}
+        >
+          <CircularProgress size="40px" />
+        </Box>
+      ) : (
         <TableContainer component={Paper}>
           <Table
             sx={{
@@ -207,4 +203,4 @@ const GPUTable = () => {
     </ContentWrapper>
   );
 };
-export default GPUTable;
+export default GPUUsageTable;

@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useRoutes } from "react-router-dom";
-import "./App.css";
 import TopMenu from "./components/TopMenu";
-import routes from "./Routes";
+import routes from "./routes/index";
 import { searchContext } from "./utils/contexts";
 
 function App() {

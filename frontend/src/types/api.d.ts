@@ -20,16 +20,15 @@ export interface GPUMetrics {
   timestamp: string; // ISO8601
 }
 
-export interface GPUNode {
+export interface GPUProcess {
   node_name: string;
-  gpu_count: number;
-  gpu_models: string[];
-}
-
-// For /api/v1/gpu/utilization (simplified)
-export interface GPUUtilization {
-  node: string;
-  gpu_index: string | number;
-  utilization: string | number;
-  timestamp: string | number;
+  gpu_index: number;
+  pid: number;
+  process_name: string;
+  user: string;
+  command: string;
+  gpu_memory: number;
+  cpu: number;
+  memory: number;
+  timestamp: string;
 }
